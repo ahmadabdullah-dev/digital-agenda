@@ -9,3 +9,5 @@ public class UserDto
     public bool IsEmailConfirmed { get; set; } 
     public string Role { get; set; } = null!;
 }
+public record RequestUpdateCurrentEmailDto(string NewEmail);
+public record UpdateCurrentEmailDto(string Code);

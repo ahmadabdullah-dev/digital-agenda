@@ -55,5 +55,112 @@ public class UserService : IUserService
         };
         return Result<UserDto>.Success(dto);
     }
+    public async Task<Result<string>> RequestUpdateCurrentEmailAsync(RequestUpdateCurrentEmailDto dto)
+    {
+        var currentUserId = GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<string>.Failure("Unauthorized", 401);
+
+        var currentUser = await _userManager.FindByIdAsync(currentUserId);
+
+        if (currentUser == null)
+            return Result<string>.Failure("Current user not found in db", 404);
+
+        if (string.Equals(currentUser.Email, dto.NewEmail, StringComparison.OrdinalIgnoreCase))
+            return Result<string>.Failure("You cannot change with the same email", 409);
+
+        var existingUser = await _userManager.FindByEmailAsync(dto.NewEmail);
+
+        if (existingUser != null)
+            return Result<string>.Failure($"Email {dto.NewEmail} already taken", 400);
+
+        currentUser.PendingEmail = dto.NewEmail;
+
+        var updateResult = await _userManager.UpdateAsync(currentUser);
+
+        if (!updateResult.Succeeded)
+            return Result<string>.Failure(ServiceHelper.GetFirstError(updateResult), 400);
+
+        try
+        {
+            await _emailService.SendCodeAsync(currentUser, "Email Update", EmailPurposes.EMAIL_UPDATE, dto.NewEmail);
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while sending confirmation code to new email.");
+
+            currentUser.PendingEmail = null;
+
+            await _userManager.UpdateAsync(currentUser);
+
+            return Result<string>.Failure("Failed to send confirmation code. Please try again later.", 400);
+        }
+        return Result<string>.Success("Confirmation code sent to new email");
+    }
+    public async Task<Result<string>> UpdateCurrentEmailAsync(UpdateCurrentEmailDto dto)
+    {
+        var currentUserId = GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<string>.Failure("Unauthorized", 401);
+
+        var currentUser = await _userManager.FindByIdAsync(currentUserId);
+
+        if (currentUser == null)
+            return Result<string>.Failure("Unauthorized", 401);
+
+        if (string.IsNullOrWhiteSpace(currentUser.PendingEmail))
+            return Result<string>.Failure("No pending email was found", 404);
+
+
+        var isValid = await _userManager.VerifyUserTokenAsync(currentUser, TokenOptions.DefaultEmailProvider, EmailPurposes.EMAIL_UPDATE, dto.Code);
+
+        if (!isValid)
+            return Result<string>.Failure("Invalid or expired code.", 400);
+
+        try
+        {
+            currentUser.Email = currentUser.PendingEmail;
+            currentUser.PendingEmail = null;
+
+            await _userManager.UpdateAsync(currentUser);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while updating email.");
+            return Result<string>.Failure("An error occurred while updating the email. Please try again later.", 400);
+        }
+
+        return Result<string>.Success("Email updated successfully");
+    }
+    public async Task<Result<string>> ResendUpdateCurrentEmailConfirmationCodeAsync()
+    {
+        var currentUserId = GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<string>.Failure("Unauthorized", 401);
+
+        var currentUser = await _userManager.FindByIdAsync(currentUserId);
+
+        if (currentUser == null)
+            return Result<string>.Failure("User not found", 404);
+
+        if (string.IsNullOrEmpty(currentUser.PendingEmail))
+            return Result<string>.Failure("No pending email update request found. Please request an email update again.", 404);
+
+        try
+        {
+            await _emailService.SendCodeAsync(currentUser, "Email Update", EmailPurposes.EMAIL_UPDATE, currentUser.PendingEmail);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while resending confirmation code to new email.");
+            return Result<string>.Failure("Failed to send confirmation code. Please try again later.", 400);
+        }
+
+        return Result<string>.Success("Confirmation code resent to new email");
+    }
 
 }
