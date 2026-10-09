@@ -37,4 +37,9 @@ public class UserController : BaseApiController
         var result = await _userService.ResendUpdateCurrentEmailConfirmationCodeAsync();
         return HandleResult(result);
     }
+    public async Task<IActionResult> DeleteCurrentUser()
+    {
+        var result = await _userService.DeleteCurrentUserAsync();
+        return HandleResult(result);
+    }
 }
