@@ -24,7 +24,7 @@ public class UserController : BaseApiController
         return HandleResult(result);
     }
 
-    [HttpPatch("update-current-email")]
+    [HttpPatch("current-email")]
     public async Task<IActionResult> UpdateCurrentEmail(UpdateCurrentEmailDto dto)
     {
         var result = await _userService.UpdateCurrentEmailAsync(dto);
@@ -37,9 +37,18 @@ public class UserController : BaseApiController
         var result = await _userService.ResendUpdateCurrentEmailConfirmationCodeAsync();
         return HandleResult(result);
     }
+
+    [HttpDelete("current")]
     public async Task<IActionResult> DeleteCurrentUser()
     {
         var result = await _userService.DeleteCurrentUserAsync();
+        return HandleResult(result);
+    }
+
+    [HttpPut("current")]
+    public async Task<IActionResult> UpdateCurrentUser(UpdateUserDto dto, CancellationToken ct)
+    {
+        var result = await _userService.UpdateCurrentUserAsync(dto, ct);
         return HandleResult(result);
     }
 }

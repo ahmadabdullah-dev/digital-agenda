@@ -8,5 +8,7 @@ public interface IUserService
     Task<Result<string>> UpdateCurrentEmailAsync(UpdateCurrentEmailDto dto);
     Task<Result<string>> ResendUpdateCurrentEmailConfirmationCodeAsync();
     Task<Result<string>> DeleteCurrentUserAsync();
+    Task<Result<string>> UpdateCurrentUserAsync(UpdateUserDto dto, CancellationToken ct);
+
 
 }
