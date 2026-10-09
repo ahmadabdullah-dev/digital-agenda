@@ -1,4 +1,4 @@
-# My Libary
+# Digital Agenda
 
 ## Tech Stack
 - **WEB:** React, TypeScript, TanStack Query, Axios, MUI, React Router
