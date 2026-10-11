@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace API.Controllers;
 
@@ -10,7 +11,7 @@ public class AuthController : BaseApiController
     {
         _authService = authService;
     }
-
+    [EnableRateLimiting("authLimiter")]
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto dto)
     {
@@ -18,6 +19,7 @@ public class AuthController : BaseApiController
 
         return HandleResult(result);
     }
+    [EnableRateLimiting("authLimiter")]
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto dto)
     {
@@ -42,12 +44,14 @@ public class AuthController : BaseApiController
         return HandleResult(result);
     }
     [Authorize]
+    [EnableRateLimiting("notificationLimiter")]
     [HttpPost("resend-current-email-confirmation-code")]
     public async Task<IActionResult> ResendEmailConfirmationCode()
     {
         var result = await _authService.ResendCurrentEmailConfirmationCodeAsync();
         return HandleResult(result);
     }
+    [EnableRateLimiting("notificationLimiter")]
     [HttpPost("forget-password")]
     public async Task<IActionResult> ForgetPassword(string email)
     {
