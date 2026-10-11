@@ -21,7 +21,9 @@ export const useLoginUser = () => {
 export function useRegisterUser() {
   return useMutation({
     mutationFn: async (creds: RegisterDto) => {
-      const response = await agent.post("/Auth/register", creds);
+      const response = await agent.post("/Auth/register", creds, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       return response;
     },
   });

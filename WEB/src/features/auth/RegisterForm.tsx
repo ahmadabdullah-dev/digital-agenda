@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { RegisterDto } from "../../lib/types/auth";
 import {
   Container,
@@ -16,9 +16,12 @@ import {
   Divider,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useRegisterUser } from "../../lib/hooks/useAuth";
 import { useNavigate } from "react-router";
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 export default function RegisterForm() {
   const registerUser = useRegisterUser();
@@ -26,16 +29,28 @@ export default function RegisterForm() {
     register,
     handleSubmit,
     reset,
+    control,
     resetField,
     formState: { errors },
   } = useForm<RegisterDto>();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const updatePreview = (file: File | null) =>
+    setPreview(file ? URL.createObjectURL(file) : null);
+
+  useEffect(() => {
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
 
   const onSubmit = (creds: RegisterDto) => {
-    registerUser.mutateAsync(creds, {
+    registerUser.mutate(creds, {
       onSuccess: () => {
         reset();
+        updatePreview(null);
       },
       onError: () => {
         resetField("Password");
@@ -62,16 +77,91 @@ export default function RegisterForm() {
             borderColor: "divider",
           }}
         >
-          <Stack   spacing={1} sx={{ mb: 4, alignItems:"center" }}>
-          
+          <Stack spacing={1} sx={{ mb: 4, alignItems: "center" }}>
             <Typography variant="h5" sx={{ fontWeight: 700, mt: 1 }}>
               Register
             </Typography>
-            
           </Stack>
 
           <Box component="form" onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2.5}>
+              <Controller
+                name="image"
+                control={control}
+                rules={{
+                  validate: (file) => {
+                    if (!file) return true; // optional
+                    if (!ALLOWED_TYPES.includes(file.type))
+                      return "Use a JPG, PNG or WEBP image";
+                    if (file.size > MAX_IMAGE_SIZE)
+                      return "Image must be 5 MB or smaller";
+                    return true;
+                  },
+                }}
+                render={({ field: { onChange }, fieldState }) => (
+                  <Box>
+                    {preview && (
+                      <Box
+                        component="img"
+                        src={preview}
+                        alt="Profile picture preview"
+                        sx={{
+                          display: "block",
+                          width: "100%",
+                          maxHeight: 240,
+                          objectFit: "contain",
+                          mb: 2,
+                          border: 1,
+                          borderColor: "divider",
+                        }}
+                      />
+                    )}
+
+                    <Stack direction="row" spacing={2}>
+                      <Button
+                        component="label"
+                        variant="outlined"
+                        color="inherit"
+                      >
+                        {preview ? "Change image" : "Choose image"}
+                        <input
+                          hidden
+                          type="file"
+                          accept={ALLOWED_TYPES.join(",")}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0] ?? null;
+                            onChange(file);
+                            updatePreview(file);
+                            e.target.value = ""; // allows picking the same file again
+                          }}
+                        />
+                      </Button>
+
+                      {preview && (
+                        <Button
+                          color="inherit"
+                          onClick={() => {
+                            onChange(null);
+                            updatePreview(null);
+                          }}
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    </Stack>
+
+                    <Typography
+                      variant="caption"
+                      color={fieldState.error ? "error" : "text.secondary"}
+                      sx={{ display: "block", mt: 1 }}
+                    >
+                      {fieldState.error?.message ??
+                        "Optional. JPG, PNG or WEBP, up to 5 MB."}
+                    </Typography>
+                  </Box>
+                )}
+              />
+
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
@@ -88,7 +178,9 @@ export default function RegisterForm() {
                   <TextField
                     label="Last Name"
                     fullWidth
-                    {...register("LastName", { required: "Last name is required" })}
+                    {...register("LastName", {
+                      required: "Last name is required",
+                    })}
                     error={!!errors.LastName}
                     helperText={errors.LastName?.message}
                   />
@@ -124,7 +216,9 @@ export default function RegisterForm() {
                         <IconButton
                           onClick={() => setShowPassword(!showPassword)}
                           edge="end"
-                          aria-label={showPassword ? "Hide password" : "Show password"}
+                          aria-label={
+                            showPassword ? "Hide password" : "Show password"
+                          }
                         >
                           {showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
