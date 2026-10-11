@@ -17,10 +17,10 @@ public class FileService : IFileService
     }
 
     public Task<Result<CloudUploadResult>> UploadImage(IFormFile file)
-        => Upload(file, new ImageUploadParams(), "e-commerce/images");
+        => Upload(file, new ImageUploadParams(), "digital-agenda/images");
 
     public Task<Result<CloudUploadResult>> UploadRawFile(IFormFile file)
-        => Upload(file, new RawUploadParams(), "e-commerce/raws");
+        => Upload(file, new RawUploadParams(), "digital-agenda/raws");
 
     private async Task<Result<CloudUploadResult>> Upload(IFormFile? file, RawUploadParams uploadParams, string folder)
     {
