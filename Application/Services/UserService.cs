@@ -35,7 +35,7 @@ public class UserService : IUserService
     {
         return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Role);
     }
-    public async Task<Result<UserDto>> GetCurrentUserAsync()
+    public async Task<Result<UserDto>> GetCurrentUserAsync(CancellationToken ct)
     {
         var userId = GetCurrentUserId();
         var role = GetCurrentUserRole();
@@ -44,6 +44,7 @@ public class UserService : IUserService
             return Result<UserDto>.Failure("You must be logged in to perform this action.", 403);
 
         var user = await _userManager.FindByIdAsync(userId);
+
 
         if (user == null)
             return Result<UserDto>.Failure("User not found!. It may have been removed or deactivated.", 404);
@@ -56,6 +57,7 @@ public class UserService : IUserService
             Email = user.Email!,
             IsEmailConfirmed = user.EmailConfirmed,
             Role = role,
+            ImageUrl = user.ImageUrl
         };
         return Result<UserDto>.Success(dto);
     }
