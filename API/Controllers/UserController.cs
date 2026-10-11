@@ -13,9 +13,9 @@ public class UserController : BaseApiController
         _userService = userService;
     }
     [HttpGet("current")]
-    public async Task<IActionResult> GetCurrentUserAsync()
+    public async Task<IActionResult> GetCurrentUserAsync(CancellationToken ct)
     {
-        var result = await _userService.GetCurrentUserAsync();
+        var result = await _userService.GetCurrentUserAsync(ct);
         return HandleResult(result);
     }
     [EnableRateLimiting("notificationLimiter")]
@@ -48,7 +48,7 @@ public class UserController : BaseApiController
     }
 
     [HttpPut("current")]
-    public async Task<IActionResult> UpdateCurrentUser(UpdateUserDto dto, CancellationToken ct)
+    public async Task<IActionResult> UpdateCurrentUser([FromForm] UpdateUserDto dto, CancellationToken ct)
     {
         var result = await _userService.UpdateCurrentUserAsync(dto, ct);
         return HandleResult(result);

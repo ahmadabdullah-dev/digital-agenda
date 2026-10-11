@@ -1,4 +1,6 @@
-﻿namespace Application.Dtos;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Application.Dtos;
 
 public class UserDto
 {
@@ -15,6 +17,7 @@ public record RequestUpdateCurrentEmailDto(string NewEmail);
 public record UpdateCurrentEmailDto(string Code);
 public class UpdateUserDto
 {
+    public IFormFile? Image { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
 }

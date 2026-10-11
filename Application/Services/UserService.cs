@@ -10,6 +10,7 @@ public class UserService : IUserService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IEmailService _emailService;
     private readonly ILogger<UserService> _logger;
+    private readonly IFileService _fileService;
 
     private readonly SignInManager<AppUser> _signInManager;
     public UserService(
@@ -17,7 +18,8 @@ public class UserService : IUserService
         IHttpContextAccessor httpContextAccessor,
         IEmailService emailService,
         ILogger<UserService> logger,
-        SignInManager<AppUser> signInManager
+        SignInManager<AppUser> signInManager,
+        IFileService fileService
 
     )
     {
@@ -26,6 +28,7 @@ public class UserService : IUserService
         _emailService = emailService;
         _logger = logger;
         _signInManager = signInManager;
+        _fileService = fileService;
     }
     public string? GetCurrentUserId()
     {
@@ -208,7 +211,24 @@ public class UserService : IUserService
 
         if (dto.LastName != null)
             user.LastName = dto.LastName;
+        if (dto.Image is not null)
+        {
+            // Delete the old image if it exists
+            if (!string.IsNullOrEmpty(user.ImagePublicId))
+            {
+                var deleteResult = await _fileService.DeleteFile(user.ImagePublicId);
+                if (!deleteResult.IsSuccess)
+                    _logger.LogWarning($"Failed to delete old image {user.ImagePublicId}");
+            }
 
+            // Upload the new image
+            var uploadResult = await _fileService.UploadImage(dto.Image);
+            if (!uploadResult.IsSuccess)
+                return Result<string>.Failure(uploadResult.Error!, 400);
+
+            user.ImageUrl = uploadResult.Value!.Url;
+            user.ImagePublicId = uploadResult.Value.PublicId;
+        }
         var updateResult = await _userManager.UpdateAsync(user);
 
         if (!updateResult.Succeeded)

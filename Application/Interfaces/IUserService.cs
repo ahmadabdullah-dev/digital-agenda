@@ -3,7 +3,7 @@ public interface IUserService
 {
     string? GetCurrentUserId();
     string? GetCurrentUserRole();
-    Task<Result<UserDto>> GetCurrentUserAsync();
+    Task<Result<UserDto>> GetCurrentUserAsync(CancellationToken ct);
     Task<Result<string>> RequestUpdateCurrentEmailAsync(RequestUpdateCurrentEmailDto dto);
     Task<Result<string>> UpdateCurrentEmailAsync(UpdateCurrentEmailDto dto);
     Task<Result<string>> ResendUpdateCurrentEmailConfirmationCodeAsync();
