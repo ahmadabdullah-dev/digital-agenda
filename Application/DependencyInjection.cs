@@ -10,8 +10,10 @@ public static class DependencyInjection
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
-      
+        services.AddScoped<IFileService, FileService>();
+
         services.Configure<EmailConfiguration>(configuration.GetSection("EmailConfiguration"));
+        services.Configure<CloudinaryConfigurations>(configuration.GetSection("CloudinaryConfigurations"));
 
         return services;
     }
