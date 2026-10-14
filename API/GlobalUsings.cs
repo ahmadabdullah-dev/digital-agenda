@@ -4,3 +4,4 @@ global using Application.Dtos;
 global using Application.Interfaces;
 global using API;
 global using Application;
+global using Infrastructure.Common;

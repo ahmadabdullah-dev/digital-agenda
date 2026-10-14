@@ -29,4 +29,10 @@ public class DayController : BaseApiController
         var result = await _dayService.GetCurrentUserDayByDateAsync(date, ct);
         return HandleResult(result);
     }
+    [HttpGet("all-of-current-user")]
+    public async Task<IActionResult> GetAllDaysOfCurrentUser([FromQuery] PaginationParams p, CancellationToken ct)
+    {
+        var result = await _dayService.GetAllDaysOfCurrentUserAsync(p, ct);
+        return HandleResult(result);
+    }
 }

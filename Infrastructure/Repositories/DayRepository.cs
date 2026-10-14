@@ -23,4 +23,10 @@ public class DayRepository : Repository<Day>, IDayRepository
     {
         return await DbSet.AnyAsync(d => d.Date == date && d.UserId == userId, ct);
     }
+    public async Task<PagedList<Day>> GetAllDaysOfCurrentUserAsync(string userId, PaginationParams p, CancellationToken ct)
+    {
+       var query = DbSet.Where(d => d.UserId == userId).OrderBy(d => d.Date);
+
+       return await PagedList<Day>.CreateAsync(query, p.Page, p.PageSize, ct);
+    }
 }

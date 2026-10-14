@@ -78,4 +78,34 @@ public class DayService : IDayService
 
         return Result<DayDto>.Success(dayDto);
     }
+    public async Task<Result<PagedList<DayDto>>> GetAllDaysOfCurrentUserAsync(PaginationParams p, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (string.IsNullOrEmpty(currentUserId))
+            return Result<PagedList<DayDto>>.Failure("User not authenticated", 401);
+
+        var days = await _dayRepository.GetAllDaysOfCurrentUserAsync(currentUserId, p, ct);
+
+        var dtos = new PagedList<DayDto>
+        {
+            Items = days.Items.Select(day => new DayDto
+            {
+                Id = day.Id,
+                Date = day.Date,
+                Notes = day.Notes.Select(n => new NoteDto
+                {
+                    Id = n.Id,
+                    Title = n.Title,
+                    Content = n.Content,
+                }).ToList()
+            }).ToList(),
+
+            CurrentPage = days.CurrentPage,
+            TotalPages = days.TotalPages,
+            TotalCount = days.TotalCount
+        };
+
+        return Result<PagedList<DayDto>>.Success(dtos);
+    }
 }
