@@ -39,8 +39,11 @@ public class DayService : IDayService
 
         try
         {
-              await _dayRepository.AddDayByDateAsync(dto.Date, currentUserId, ct);
-              await _dayRepository.SaveChangesAsync(ct);
+            if(await _dayRepository.IsDayExistsByDateAsync(dto.Date, currentUserId, ct))
+                return Result<string>.Failure("Day already exists for the given date", 400);
+
+            await _dayRepository.AddDayByDateAsync(dto.Date, currentUserId, ct);
+            await _dayRepository.SaveChangesAsync(ct);
         }
         catch (Exception ex)
         {

@@ -19,4 +19,8 @@ public class DayRepository : Repository<Day>, IDayRepository
     {
         return await DbSet.SingleOrDefaultAsync(d => d.Date == date && d.UserId == userId, ct);
     }
+    public async Task<bool> IsDayExistsByDateAsync(DateOnly date, string userId, CancellationToken ct)
+    {
+        return await DbSet.AnyAsync(d => d.Date == date && d.UserId == userId, ct);
+    }
 }
