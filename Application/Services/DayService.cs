@@ -42,7 +42,13 @@ public class DayService : IDayService
             if(await _dayRepository.IsDayExistsByDateAsync(dto.Date, currentUserId, ct))
                 return Result<string>.Failure("Day already exists for the given date", 400);
 
-            await _dayRepository.AddDayByDateAsync(dto.Date, currentUserId, ct);
+            var day = new Day
+            {
+                Date = dto.Date,
+                UserId = currentUserId
+            };
+
+            await _dayRepository.AddAsync(day, ct);
             await _dayRepository.SaveChangesAsync(ct);
         }
         catch (Exception ex)
