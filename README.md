@@ -11,9 +11,11 @@
 ## Features 
 - EmailService
 - DataSeeder
-- RateLimiter
+- RateLimiter(notification, auth)
 - Cors
-- AuthService (Login, Logout, Register, ConfirmEmail, ResendEmailConfirmationCode, ForgetPassword, UpdatePassword)
+- AuthService(Login, Logout, Register, ConfirmEmail, ResendEmailConfirmationCode, ForgetPassword, UpdatePassword)
+- UserService(GetCurrentUser as Dto, UserId and Role, Update, Delete, UpdateEmail methods)
+
 
 ## Architechure(Layered On API)
 - **WEB:** UI Components, Hooks, Routes, Call APIs
