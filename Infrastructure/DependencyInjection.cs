@@ -35,6 +35,8 @@ namespace Infrastructure
 
             services.AddScoped<DataSeeder>();
             services.AddScoped<INoteRepository, NoteRepository>();
+            services.AddScoped<IDayRepository, DayRepository>();
+
             services.AddDataProtection();
 
             return services;
