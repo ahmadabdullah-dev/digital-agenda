@@ -47,7 +47,32 @@ public class DayService : IDayService
             return Result<string>.Failure($"An error occurred while creating day: {ex.Message}", 400);
         }
 
-
         return Result<string>.Success("Day added successfully");
+    }
+    public async Task<Result<DayDto>> GetCurrentUserDayByDateAsync(DateOnly date, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (string.IsNullOrEmpty(currentUserId))
+            return Result<DayDto>.Failure("User not authenticated", 401);
+
+        var day = await _dayRepository.GetDayByDateAsync(date, currentUserId, ct);
+
+        if (day == null)
+            return Result<DayDto>.Failure("Day not found", 404);
+
+        var dayDto = new DayDto
+        {
+            Id = day.Id,
+            Date = day.Date,
+            Notes = day.Notes.Select(n => new NoteDto
+            {
+                Id = n.Id,
+                Title = n.Title,
+                Content = n.Content,
+            }).ToList()
+        };
+
+        return Result<DayDto>.Success(dayDto);
     }
 }

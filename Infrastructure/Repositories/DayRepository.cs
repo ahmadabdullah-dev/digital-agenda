@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Repositories;
 public class DayRepository : Repository<Day>, IDayRepository
 {
     public DayRepository(ApplicationDbContext dbContext) : base(dbContext) {}
@@ -12,5 +14,9 @@ public class DayRepository : Repository<Day>, IDayRepository
 
         await DbSet.AddAsync(day, ct);
         await Db.SaveChangesAsync(ct);
+    }
+    public async Task<Day?> GetDayByDateAsync(DateOnly date, string userId, CancellationToken ct)
+    {
+        return await DbSet.SingleOrDefaultAsync(d => d.Date == date && d.UserId == userId, ct);
     }
 }

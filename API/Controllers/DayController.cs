@@ -23,4 +23,10 @@ public class DayController : BaseApiController
         var result = await _dayService.AddDayByDateToCurrentUserAsync(dto, ct);
         return HandleResult(result);
     }
+    [HttpGet("by-date-of-current-user/{date}")]
+    public async Task<IActionResult> GetCurrentUserDayByDate([FromRoute] DateOnly date, CancellationToken ct)
+    {
+        var result = await _dayService.GetCurrentUserDayByDateAsync(date, ct);
+        return HandleResult(result);
+    }
 }
