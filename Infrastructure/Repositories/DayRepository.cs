@@ -18,4 +18,12 @@ public class DayRepository : Repository<Day>, IDayRepository
 
        return await PagedList<Day>.CreateAsync(query, p.Page, p.PageSize, ct);
     }
+    public async Task<DateOnly?> GetDayDateByIdAsync(string id, CancellationToken ct)
+    {
+        return await DbSet.Where(d => d.Id == id).Select(d => d.Date).FirstOrDefaultAsync(ct);
+    }
+    public async Task<string?> GetDayIdByDateAsync(DateOnly date, CancellationToken ct)
+    {
+        return await DbSet.Where(d => d.Date == date).Select(d => d.Id).FirstOrDefaultAsync(ct);
+    }
 }
