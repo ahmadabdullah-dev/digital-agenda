@@ -114,4 +114,14 @@ public class DayService : IDayService
 
         return Result<PagedList<DayDto>>.Success(dtos);
     }
+    
+    public async Task<string?> GetDayIdByDateAsync(DateOnly date, CancellationToken ct)
+    {
+        return await _dayRepository.GetDayIdByDateAsync(date, ct);
+    }
+    public async Task<DateOnly?> GetDayDateByIdAsync(string id, CancellationToken ct)
+    {
+        return await _dayRepository.GetDayDateByIdAsync(id, ct);
+    }
+
 }
