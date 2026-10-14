@@ -34,6 +34,7 @@ namespace Infrastructure
             .AddDefaultTokenProviders();
 
             services.AddScoped<DataSeeder>();
+            services.AddScoped<INoteRepository, NoteRepository>();
             services.AddDataProtection();
 
             return services;
