@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
-public class NoteController : BaseApiController
+public class DayNoteController : BaseApiController
 {
-    private readonly INoteService _noteService;
+    private readonly IDayNoteService _noteService;
 
-    public NoteController(INoteService noteService)
+    public DayNoteController(IDayNoteService noteService)
     {
         _noteService = noteService;
     }

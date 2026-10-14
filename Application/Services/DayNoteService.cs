@@ -2,14 +2,14 @@
 
 namespace Application.Services;
 
-public class NoteService : INoteService
+public class DayNoteService : IDayNoteService
 {
-    private readonly INoteRepository _noteRepository;
+    private readonly IDayNoteRepository _noteRepository;
     private readonly IUserService _userService;
-    private readonly ILogger<NoteService> _logger;
-    public NoteService(INoteRepository noteRepository,
+    private readonly ILogger<DayNoteService> _logger;
+    public DayNoteService(IDayNoteRepository noteRepository,
         IUserService userService,
-        ILogger<NoteService> logger)
+        ILogger<DayNoteService> logger)
     {
         _noteRepository = noteRepository;
         _userService = userService;
@@ -22,16 +22,16 @@ public class NoteService : INoteService
         if (currentUserId == null)
             return Result<string>.Failure("User not authenticated", 401);
 
-        var note = new Note
+        var dayNote = new DayNote
         {
             UserId = currentUserId,
             Title = dto.Title,
             Content = dto.Content,
-            
+            Date = dto.date
         };
         try
         {
-            await _noteRepository.AddAsync(note, ct);
+            await _noteRepository.AddAsync(dayNote, ct);
         }
         catch (Exception ex)
         {

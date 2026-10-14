@@ -5,7 +5,7 @@ namespace Infrastructure;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<AppUser>(options)
 {
-    public DbSet<Note> Notes => Set<Note>();
+    public DbSet<DayNote> Notes => Set<DayNote>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -17,10 +17,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(u => u.LastName).HasMaxLength(30).IsRequired();
         });
 
-        builder.Entity<Note>(entity =>
+        builder.Entity<DayNote>(entity =>
         {
-            entity.Property(n => n.Title).HasMaxLength(100).IsRequired();
-            entity.Property(n => n.Content).HasMaxLength(10000);
+            entity.Property(dn => dn.Title).HasMaxLength(100).IsRequired();
+            entity.Property(dn => dn.Content).HasMaxLength(10000);
+            entity.Property(dn => dn.Date).IsRequired();
         });
     }
 }
