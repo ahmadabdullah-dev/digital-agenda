@@ -36,7 +36,8 @@ public class DayService : IDayService
       
         if(string.IsNullOrEmpty(currentUserId))
             return Result<string>.Failure("User not authenticated", 401);
-
+        
+        string? dayId = null; 
         try
         {
             if(await _dayRepository.IsDayExistsByDateAsync(dto.Date, currentUserId, ct))
@@ -47,16 +48,15 @@ public class DayService : IDayService
                 Date = dto.Date,
                 UserId = currentUserId
             };
-
-            await _dayRepository.AddAsync(day, ct);
-            await _dayRepository.SaveChangesAsync(ct);
+            dayId = await _dayRepository.AddDayAndReturnIdAsync(day, ct);
+          
         }
         catch (Exception ex)
         {
             return Result<string>.Failure($"An error occurred while creating day: {ex.Message}", 400);
         }
 
-        return Result<string>.Success("Day added successfully");
+        return Result<string>.Success(dayId);
     }
     public async Task<Result<DayDto>> GetCurrentUserDayByDateAsync(DateOnly date, CancellationToken ct)
     {

@@ -26,4 +26,10 @@ public class DayRepository : Repository<Day>, IDayRepository
     {
         return await DbSet.Where(d => d.Date == date).Select(d => d.Id).FirstOrDefaultAsync(ct);
     }
+    public async Task<string> AddDayAndReturnIdAsync(Day day, CancellationToken ct = default)
+    {
+        await DbSet.AddAsync(day, ct);
+        await Db.SaveChangesAsync(ct);
+        return day.Id;
+    }
 }
