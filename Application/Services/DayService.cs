@@ -3,9 +3,11 @@
 public class DayService : IDayService   
 {
     private readonly IDayRepository _dayRepository;
-    public DayService(IDayRepository dayRepository)
+    private readonly IUserService _userService;
+    public DayService(IDayRepository dayRepository, IUserService userService)
     {
         _dayRepository = dayRepository;
+        _userService = userService;
     }
     public async Task<Result<DayDto>> GetDayByIdAsync(string id, CancellationToken ct)
     {
@@ -27,5 +29,25 @@ public class DayService : IDayService
         };
 
         return Result<DayDto>.Success(dayDto);
+    }
+    public async Task<Result<string>> AddDayByDateToCurrentUserAsync(AddDayDto dto, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+      
+        if(string.IsNullOrEmpty(currentUserId))
+            return Result<string>.Failure("User not authenticated", 401);
+
+        try
+        {
+              await _dayRepository.AddDayByDateAsync(dto.Date, currentUserId, ct);
+              await _dayRepository.SaveChangesAsync(ct);
+        }
+        catch (Exception ex)
+        {
+            return Result<string>.Failure($"An error occurred while creating day: {ex.Message}", 400);
+        }
+
+
+        return Result<string>.Success("Day added successfully");
     }
 }
