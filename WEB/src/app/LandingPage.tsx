@@ -1,5 +1,9 @@
+import MonthlyCalendar from "../features/calendar/MonthlyCalendar";
+
 export default function LandingPage() {
   return (
-    <div>LandingPage</div>
+    <div>
+      <MonthlyCalendar/>
+    </div>
   )
 }
