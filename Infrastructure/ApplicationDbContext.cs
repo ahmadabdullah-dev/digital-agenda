@@ -5,7 +5,7 @@ namespace Infrastructure;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<AppUser>(options)
 {
-    public DbSet<DayNote> Notes => Set<DayNote>();
+    public DbSet<DayNote> DayNotes => Set<DayNote>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

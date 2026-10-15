@@ -59,7 +59,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notes");
+                    b.ToTable("DayNotes");
                 });
 
             modelBuilder.Entity("Domain.Identity.AppUser", b =>

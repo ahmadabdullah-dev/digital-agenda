@@ -3,16 +3,22 @@
 namespace API.Controllers;
 public class DayNoteController : BaseApiController
 {
-    private readonly IDayNoteService _noteService;
+    private readonly IDayNoteService _dayNoteService;
 
-    public DayNoteController(IDayNoteService noteService)
+    public DayNoteController(IDayNoteService dayNoteService)
     {
-        _noteService = noteService;
+        _dayNoteService = dayNoteService;
     }
     [HttpPost("day-note")]
     public async Task<IActionResult> AddDayNote(AddDayNote dto, CancellationToken ct)
     {
-        var result = await _noteService.AddDayNoteAsync(dto, ct);
+        var result = await _dayNoteService.AddDayNoteAsync(dto, ct);
+        return HandleResult(result);
+    }
+    [HttpGet("all-curent-user-day-notes/{date}")]
+    public async Task<IActionResult> GetAllCurrentUserDayNotes([FromRoute] DateOnly date,[FromQuery] PaginationParams p, CancellationToken ct)
+    {
+        var result = await _dayNoteService.GetAllCurrentUserDayNotesAsync(date, p, ct);
         return HandleResult(result);
     }
 }
