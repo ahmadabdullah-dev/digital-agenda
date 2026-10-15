@@ -1,4 +1,4 @@
-# Digital Agenda
+# Smart Digital Agenda
 - A personal productivity platform that helps to organize daily plans, tasks, notes, and goals in one place.
 - It features an Al assistant for better and clear mind map.
 
