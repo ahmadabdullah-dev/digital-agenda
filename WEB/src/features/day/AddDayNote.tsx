@@ -16,14 +16,13 @@ export default function AddDayNote({ date }: Props) {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<AddDayNoteDto>({ defaultValues: emptyForm });
 
   const onSubmit = (values: AddDayNoteDto) => {
     mutate(
       { ...values, content: values.content?.trim() || null },
-      { onSuccess: () => reset(emptyForm) },
+     
     );
   };
 

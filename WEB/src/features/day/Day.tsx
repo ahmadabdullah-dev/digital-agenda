@@ -1,6 +1,7 @@
 import { Typography } from "@mui/material";
 import { useParams } from "react-router";
 import AddDayNote from "./AddDayNote";
+import DayNotes from "./DayNotes";
 
 export default function Day() {
   const { date } = useParams<{ date: string }>();
@@ -11,6 +12,8 @@ export default function Day() {
     <div>
       <Typography>Day Date: {date}</Typography>
       <AddDayNote key={date} date={date} />
+      <DayNotes key={date} date={date}/>
+
     </div>
   );
 }
