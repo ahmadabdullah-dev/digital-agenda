@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
+
+[Authorize]
 public class DayNoteController : BaseApiController
 {
     private readonly IDayNoteService _dayNoteService;
@@ -10,7 +13,7 @@ public class DayNoteController : BaseApiController
         _dayNoteService = dayNoteService;
     }
     [HttpPost("day-note")]
-    public async Task<IActionResult> AddDayNote(AddDayNote dto, CancellationToken ct)
+    public async Task<IActionResult> AddDayNote(AddDayNoteDto dto, CancellationToken ct)
     {
         var result = await _dayNoteService.AddDayNoteAsync(dto, ct);
         return HandleResult(result);

@@ -7,7 +7,7 @@ public class DayNoteDto
     public string? Content { get; set; }
     public DateTime CreatedDate { get; set; }
 }
-public class AddDayNote
+public class AddDayNoteDto
 {
     public DateOnly date { get; set; }
     public required string Title { get; set; }

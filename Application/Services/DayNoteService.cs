@@ -15,7 +15,7 @@ public class DayNoteService : IDayNoteService
         _userService = userService;
         _logger = logger;
     }
-    public async Task<Result<string>> AddDayNoteAsync(AddDayNote dto, CancellationToken ct)
+    public async Task<Result<string>> AddDayNoteAsync(AddDayNoteDto dto, CancellationToken ct)
     {
         var currentUserId = _userService.GetCurrentUserId();
        
