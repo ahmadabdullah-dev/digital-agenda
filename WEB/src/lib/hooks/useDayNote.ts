@@ -8,7 +8,7 @@ export function useAddDayNote() {
 
   return useMutation({
     mutationFn: (dto: AddDayNoteDto) =>
-        agent.post<DayNoteDto>("/DayNote/day-note", dto).then((res) => res.data),
+        agent.post<string>("/DayNote/day-note", dto).then((res) => res.data),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["daynote", variables.date] });
     },

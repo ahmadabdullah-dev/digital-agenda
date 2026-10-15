@@ -107,7 +107,7 @@ export default function MonthlyCalendar() {
           return (
             <Box
               key={day.format("YYYY-MM-DD")}
-              onClick={() => navigate(`/day/${day.format("DD-MM-YYYY")}`)}
+              onClick={() => navigate(`/day/${day.format("YYYY-MM-DD")}`)}
               sx={{
                 p: { xs: 0.5, sm: 1 },
                 overflow: "hidden",
