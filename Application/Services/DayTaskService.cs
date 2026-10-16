@@ -50,7 +50,7 @@ public class DayTaskService : IDayTaskService
         if (currentUserId == null)
             return Result<string>.Failure("User not authenticated", 401);
 
-        var dayNote = new DayTask
+        var dayTask = new DayTask
         {
             UserId = currentUserId,
             Title = dto.Title,
@@ -58,7 +58,7 @@ public class DayTaskService : IDayTaskService
         };
         try
         {
-            await _dayTaskRepository.AddAsync(dayNote, ct);
+            await _dayTaskRepository.AddAsync(dayTask, ct);
             await _dayTaskRepository.SaveChangesAsync(ct);
         }
         catch (Exception ex)
@@ -69,5 +69,30 @@ public class DayTaskService : IDayTaskService
 
         return Result<string>.Success("Task added successfully");
     }
+    public async Task<Result<string>> DeleteDayTaskAsync(string taskId, CancellationToken ct)
+    {
+        var entity = await _dayTaskRepository.GetByIdAsync(taskId, ct);
+
+        if (entity is null)
+            return Result<string>.Failure("Task not found", 404);
+
+        try
+        {
+            _dayTaskRepository.Remove(entity);
+            await _dayTaskRepository.SaveChangesAsync(ct);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while removing task {TaskId}", taskId);
+            return Result<string>.Failure("Failed to delete task", 500);
+        }
+
+        return Result<string>.Success("Task deleted successfully");
+    }
+
 
 }

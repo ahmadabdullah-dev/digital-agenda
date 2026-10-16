@@ -1,5 +1,4 @@
-﻿using Application.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -22,6 +21,12 @@ public class DayTaskController : BaseApiController
     public async Task<IActionResult> AddDayTask(AddDayTaskDto dto, CancellationToken ct)
     {
         var result = await _dayTaskService.AddDayTaskAsync(dto, ct);
+        return HandleResult(result);
+    }
+    [HttpDelete("day-task/{taskId}")]
+    public async Task<IActionResult> DeleteDayTask([FromRoute] string taskId, CancellationToken ct)
+    {
+        var result = await _dayTaskService.DeleteDayTaskAsync(taskId, ct);
         return HandleResult(result);
     }
 }
