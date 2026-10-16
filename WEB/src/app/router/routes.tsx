@@ -13,6 +13,7 @@ import RequireConfirmedEmail from "./RequireConfirmedEmail";
 import Dashboard from "../Dashboard";
 import MyProfile from "../../features/user/MyProfile";
 import Day from "../../features/day/Day";
+import UserSettings from "../../features/user/UserSettings";
 
 export const routes = createBrowserRouter([
   {
@@ -30,6 +31,7 @@ export const routes = createBrowserRouter([
               { path: "dashboard", element: <Dashboard /> },
               { path: "my-profile", element: <MyProfile /> },
               { path: "day/:date", element: <Day /> },
+              { path: "user/settings", element: <UserSettings /> },
             ],
           },
           { path: "/confirm-email", element: <ConfirmEmailForm /> },
