@@ -30,4 +30,10 @@ public class DayNoteController : BaseApiController
         var result = await _dayNoteService.DeleteDayNoteAsync(noteId, ct);
         return HandleResult(result);
     }
+    [HttpPut("day-note")]
+    public async Task<IActionResult> UpdateDayNote(UpdateDayNoteDto dto, CancellationToken ct)
+    {
+        var result = await _dayNoteService.UpdateDayNoteAsync(dto, ct);
+        return HandleResult(result);
+    }
 }

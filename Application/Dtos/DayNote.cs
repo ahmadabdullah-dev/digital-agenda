@@ -13,3 +13,9 @@ public class AddDayNoteDto
     public required string Title { get; set; }
     public string? Content { get; set; }
 }
+public class UpdateDayNoteDto
+{
+    public required string Id { get; set; }
+    public string? Title { get; set; }
+    public string? Content { get; set; }
+}

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Services;
 
@@ -92,5 +93,35 @@ public class DayNoteService : IDayNoteService
         }
 
         return Result<string>.Success("Note deleted successfully");
+    }
+    public async Task<Result<string>> UpdateDayNoteAsync(UpdateDayNoteDto dto, CancellationToken ct)
+    {
+        var entity = await _dayNoteRepository.GetByIdAsync(dto.Id);
+
+        if (entity is null)
+            return Result<string>.Failure("Note not found", 404);
+        
+        if (dto.Title != null)
+            entity.Title = dto.Title;
+
+        if (dto.Content != null)
+            entity.Content = dto.Content;
+
+        try
+        {
+            _dayNoteRepository.Update(entity);
+            await _dayNoteRepository.SaveChangesAsync(ct);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while removing note {NoteId}", dto.Id);
+            return Result<string>.Failure("Failed to delete note", 500);
+        }
+        return Result<string>.Success("Note updated successfully");
+
     }
 }
