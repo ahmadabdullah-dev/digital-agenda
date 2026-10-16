@@ -12,3 +12,10 @@ export type UpdateUserDto = {
   lastName: string | null;
   image: File | null;
 };
+export type RequestUpdateCurrentEmailDto = {
+  newEmail: string;
+};
+
+export type UpdateCurrentEmailDto = {
+  code: string;
+};
