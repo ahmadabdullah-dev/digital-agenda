@@ -42,7 +42,6 @@ public class DayNoteService : IDayNoteService
 
         return Result<string>.Success("Note added successfully");
     }
-
     public async Task<Result<PagedList<DayNoteDto>>> GetAllCurrentUserDayNotesAsync(DateOnly date ,PaginationParams p, CancellationToken ct)
     {
         var userId = _userService.GetCurrentUserId();
@@ -69,5 +68,29 @@ public class DayNoteService : IDayNoteService
         };
 
         return Result<PagedList<DayNoteDto>>.Success(dtos);
+    }
+    public async Task<Result<string>> DeleteDayNoteAsync(string noteId, CancellationToken ct)
+    {
+        var entity = await _dayNoteRepository.GetByIdAsync(noteId, ct);
+
+        if (entity is null)
+            return Result<string>.Failure("Note not found", 404);
+
+        try
+        {
+            _dayNoteRepository.Remove(entity);
+            await _dayNoteRepository.SaveChangesAsync(ct); 
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while removing note {NoteId}", noteId);
+            return Result<string>.Failure("Failed to delete note", 500);
+        }
+
+        return Result<string>.Success("Note deleted successfully");
     }
 }

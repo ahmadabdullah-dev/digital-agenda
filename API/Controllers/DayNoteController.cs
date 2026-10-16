@@ -24,4 +24,10 @@ public class DayNoteController : BaseApiController
         var result = await _dayNoteService.GetAllCurrentUserDayNotesAsync(date, p, ct);
         return HandleResult(result);
     }
+    [HttpDelete("day-note/{noteId}")]
+    public async Task<IActionResult> DeleteDayNote([FromRoute] string noteId,  CancellationToken ct)
+    {
+        var result = await _dayNoteService.DeleteDayNoteAsync(noteId, ct);
+        return HandleResult(result);
+    }
 }
