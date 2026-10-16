@@ -7,3 +7,8 @@ public class DayTaskDto
     public bool IsCompleted { get; set; }
     public DateTime CreatedDate { get; set; }
 }
+public class AddDayTaskDto
+{
+    public DateOnly date { get; set; }
+    public required string Title { get; set; }
+}

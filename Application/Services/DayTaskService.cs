@@ -1,13 +1,20 @@
-﻿namespace Application.Services;
+﻿using Infrastructure.Repositories;
+using Microsoft.Extensions.Logging;
+
+namespace Application.Services;
 
 public class DayTaskService : IDayTaskService
 {
     private readonly IDayTaskRepository _dayTaskRepository;
     private readonly IUserService _userService;
-    public DayTaskService(IDayTaskRepository dayTaskRepository, IUserService userService)
+    private readonly ILogger<DayTaskService> _logger;
+    public DayTaskService(IDayTaskRepository dayTaskRepository, 
+        IUserService userService,
+        ILogger<DayTaskService> logger)
     {
         _dayTaskRepository = dayTaskRepository;
         _userService = userService;
+        _logger = logger;
     }
     public async Task<Result<PagedList<DayTaskDto>>> GetAllCurrentUserDayTasksAsync(DateOnly date, PaginationParams p, CancellationToken ct)
     {
@@ -35,6 +42,32 @@ public class DayTaskService : IDayTaskService
         };
 
         return Result<PagedList<DayTaskDto>>.Success(dtos);
+    }
+    public async Task<Result<string>> AddDayTaskAsync(AddDayTaskDto dto, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<string>.Failure("User not authenticated", 401);
+
+        var dayNote = new DayTask
+        {
+            UserId = currentUserId,
+            Title = dto.Title,
+            Date = dto.date
+        };
+        try
+        {
+            await _dayTaskRepository.AddAsync(dayNote, ct);
+            await _dayTaskRepository.SaveChangesAsync(ct);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Failed to create day task for {dto.date}");
+            return Result<string>.Failure("Unexpected error while adding the day task", 500);
+        }
+
+        return Result<string>.Success("Task added successfully");
     }
 
 }
