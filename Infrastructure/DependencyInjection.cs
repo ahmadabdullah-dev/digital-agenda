@@ -35,6 +35,7 @@ namespace Infrastructure
 
             services.AddScoped<DataSeeder>();
             services.AddScoped<IDayNoteRepository, DayNoteRepository>();
+            services.AddScoped<IDayTaskRepository, DayTaskRepository>();
 
             services.AddDataProtection();
 

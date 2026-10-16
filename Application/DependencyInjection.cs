@@ -12,6 +12,7 @@ public static class DependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IDayNoteService, DayNoteService>();
+        services.AddScoped<IDayTaskService, DayTaskService>();
 
         services.Configure<EmailConfiguration>(configuration.GetSection("EmailConfiguration"));
         services.Configure<CloudinaryConfigurations>(configuration.GetSection("CloudinaryConfigurations"));
