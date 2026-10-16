@@ -1,0 +1,9 @@
+﻿namespace Application.Dtos;
+
+public class DayTaskDto
+{
+    public required string Id { get; set; }
+    public string Title { get; set; } = null!;
+    public bool IsCompleted { get; set; }
+    public DateTime CreatedDate { get; set; }
+}

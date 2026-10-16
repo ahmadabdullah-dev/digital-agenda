@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
@@ -9,5 +10,11 @@ public class DayTaskController : BaseApiController
     public DayTaskController(IDayTaskService dayTaskService)
     {
         _dayTaskService = dayTaskService;
+    }
+    [HttpGet("all-current-user-day-tasks/{date}")]
+    public async Task<IActionResult> GetAllCurrentUserDayTasks([FromRoute] DateOnly date, [FromQuery] PaginationParams p, CancellationToken ct)
+    {
+        var result = await _dayTaskService.GetAllCurrentUserDayTasksAsync(date, p, ct);
+        return HandleResult(result);
     }
 }
