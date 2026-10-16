@@ -1,11 +1,25 @@
-import type { UserDto } from "../types/user";
-import { useQuery } from "@tanstack/react-query";
+import type { UpdateUserDto, UserDto } from "../types/user";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import agent from "../api/agent";
 export const useCurrentUser = () =>
   useQuery<UserDto>({
     queryKey: ["currentUser"],
-    queryFn: () =>
-      agent.get<UserDto>("/User/current").then((res) => res.data),
+    queryFn: () => agent.get<UserDto>("/User/current").then((res) => res.data),
     staleTime: 5 * 60 * 1000, // 5 min
     retry: false,
   });
+
+export const useUpdateCurrentUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (dto: UpdateUserDto) => {
+      const response = await agent.put<string>("/User/current", dto, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    },
+  });
+};

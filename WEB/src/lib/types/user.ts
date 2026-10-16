@@ -7,3 +7,8 @@ export type UserDto = {
   role: string;
   imageUrl: string | null;
 };
+export type UpdateUserDto = {
+  firstName: string | null;
+  lastName: string | null;
+  image: File | null;
+};
