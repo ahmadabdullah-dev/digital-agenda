@@ -1,5 +1,4 @@
-﻿using Infrastructure.Repositories;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 namespace Application.Services;
 
@@ -93,6 +92,34 @@ public class DayTaskService : IDayTaskService
 
         return Result<string>.Success("Task deleted successfully");
     }
+    public async Task<Result<string>> UpdateDayTaskAsync(UpdateDayTaskDto dto, CancellationToken ct)
+    {
+        var entity = await _dayTaskRepository.GetByIdAsync(dto.Id);
+
+        if (entity is null)
+            return Result<string>.Failure("Task not found", 404);
+
+        if (dto.Title != null)
+            entity.Title = dto.Title;
 
 
+        if (dto.IsCompleted.HasValue)
+            entity.IsCompleted = dto.IsCompleted.Value;
+
+        try
+        {
+            _dayTaskRepository.Update(entity);
+            await _dayTaskRepository.SaveChangesAsync(ct);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while removing taks {TaskId}", dto.Id);
+            return Result<string>.Failure("Failed to delete task", 500);
+        }
+        return Result<string>.Success("Task updated successfully");
+    }
 }
