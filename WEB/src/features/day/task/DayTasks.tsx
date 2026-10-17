@@ -10,9 +10,14 @@ import {
   Skeleton,
   Stack,
   Typography,
+  Tooltip,
+  IconButton
 } from "@mui/material";
 import type { PaginationParams } from "../../../lib/types/common";
 import { useGetAllCurrentUserDayTasks } from "../../../lib/hooks/useDayTask";
+import type { DayTaskDto } from "../../../lib/types/dayTask";
+import UpdateDayTaskDialog from "./UpdateDayTaskDialog";
+import { EditOutlined } from "@mui/icons-material";
 
 type Props = {
   date: string;
@@ -25,6 +30,7 @@ export default function DayTasks({ date }: Props) {
     page: 1,
     pageSize: 12,
   });
+  const [editingTask, setEditingTask] = useState<DayTaskDto | null>(null);
 
   const { data, isPending, isError, error } = useGetAllCurrentUserDayTasks(
     pagination,
@@ -50,70 +56,105 @@ export default function DayTasks({ date }: Props) {
   }
 
   return (
-    <Stack spacing={3}>
-      <Typography variant="h5" component="h2" sx={{ fontWeight: 600 }}>
-        Tasks
-      </Typography>
+    <>
+      <Stack spacing={3}>
+        <Typography variant="h5" component="h2" sx={{ fontWeight: 600 }}>
+          Tasks
+        </Typography>
 
-      <Grid container spacing={2}>
-        {data.items.map((task) => (
-          <Grid key={task.id} size={cardSize}>
-            <Card
-              variant="outlined"
-              sx={{
-                position: "relative",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                borderRadius: 2,
-                transition: "all 0.2s",
-                "&:hover": {
-                  borderColor: "primary.main",
-                  boxShadow: 2,
-                  transform: "translateY(-2px)",
-                },
-              }}
-            >
-              <CardContent
+        <Grid container spacing={2}>
+          {data.items.map((task) => (
+            <Grid key={task.id} size={cardSize}>
+              <Card
+                variant="outlined"
+                onClick={() => setEditingTask(task)}
                 sx={{
-                  flex: 1,
+                  position: "relative",
+                  height: "100%",
                   display: "flex",
                   flexDirection: "column",
-                  gap: 1,
+                  borderRadius: 2,
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    borderColor: "primary.main",
+                    boxShadow: 2,
+                    transform: "translateY(-2px)",
+                  },
                 }}
               >
-                <Typography
-                  variant="subtitle1"
-                  noWrap
+                <Box
                   sx={{
-                    fontWeight: 600,
-                    pr: 9,
-                    textDecoration: task.isCompleted ? "line-through" : "none",
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    display: "flex",
                   }}
                 >
-                  {task.title}
-                </Typography>
+                  <Tooltip title="Update">
+                    <IconButton
+                      size="small"
+                      aria-label="Update note"
+                      onClick={() => setEditingTask(task)}
+                    >
+                      <EditOutlined fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+               
+                </Box>
+                <CardContent
+                  sx={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                  }}
+                >
+                  <Typography
+                    variant="subtitle1"
+                    noWrap
+                    sx={{
+                      fontWeight: 600,
+                      pr: 9,
+                      textDecoration: task.isCompleted
+                        ? "line-through"
+                        : "none",
+                    }}
+                  >
+                    {task.title}
+                  </Typography>
 
-                <Typography variant="caption" color="text.disabled">
-                  {dayjs(task.createdDate).format("DD MMM YYYY, HH:mm")}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+                  <Typography variant="caption" color="text.disabled">
+                    {dayjs(task.createdDate).format("DD MMM YYYY, HH:mm")}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
 
-      {data.totalPages > 1 && (
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Pagination
-            count={data.totalPages}
-            page={data.currentPage}
-            onChange={(_, page) => setPagination((prev) => ({ ...prev, page }))}
-            color="primary"
-            size="small"
-          />
-        </Box>
+        {data.totalPages > 1 && (
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Pagination
+              count={data.totalPages}
+              page={data.currentPage}
+              onChange={(_, page) =>
+                setPagination((prev) => ({ ...prev, page }))
+              }
+              color="primary"
+              size="small"
+            />
+          </Box>
+        )}
+      </Stack>
+
+      {editingTask && (
+        <UpdateDayTaskDialog
+          key={editingTask.id}
+          task={editingTask}
+          onClose={() => setEditingTask(null)}
+        />
       )}
-    </Stack>
+    </>
   );
 }
