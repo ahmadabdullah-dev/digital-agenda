@@ -14,7 +14,10 @@ export const useGetAllCurrentUserDayTasks = (
   useQuery<PaginatedList<DayTaskDto>>({
     queryKey: ["daytask", date, pagination],
     queryFn: () =>
-      agent.get<PaginatedList<DayTaskDto>>(`/DayTask/all-current-user-day-tasks/${date}`, { params: pagination })
+      agent
+        .get<
+          PaginatedList<DayTaskDto>
+        >(`/DayTask/all-current-user-day-tasks/${date}`, { params: pagination })
         .then((res) => res.data),
     staleTime: 5 * 60 * 1000,
     retry: false,
@@ -43,3 +46,14 @@ export function useUpdateDayTask() {
   });
 }
 
+export function useDeleteDayTask() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) =>
+      agent.delete<string>(`/DayTask/day-task/${id}`).then((res) => res.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["daytask"] });
+    },
+  });
+}

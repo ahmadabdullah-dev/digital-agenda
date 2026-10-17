@@ -14,10 +14,10 @@ import {
   IconButton
 } from "@mui/material";
 import type { PaginationParams } from "../../../lib/types/common";
-import { useGetAllCurrentUserDayTasks } from "../../../lib/hooks/useDayTask";
+import { useDeleteDayTask, useGetAllCurrentUserDayTasks } from "../../../lib/hooks/useDayTask";
 import type { DayTaskDto } from "../../../lib/types/dayTask";
 import UpdateDayTaskDialog from "./UpdateDayTaskDialog";
-import { EditOutlined } from "@mui/icons-material";
+import { DeleteOutlineOutlined, EditOutlined } from "@mui/icons-material";
 
 type Props = {
   date: string;
@@ -31,6 +31,7 @@ export default function DayTasks({ date }: Props) {
     pageSize: 12,
   });
   const [editingTask, setEditingTask] = useState<DayTaskDto | null>(null);
+  const { mutate: deleteNote, isPending: isDeleting } = useDeleteDayTask();
 
   const { data, isPending, isError, error } = useGetAllCurrentUserDayTasks(
     pagination,
@@ -94,13 +95,27 @@ export default function DayTasks({ date }: Props) {
                   <Tooltip title="Update">
                     <IconButton
                       size="small"
-                      aria-label="Update note"
+                      aria-label="Update task"
                       onClick={() => setEditingTask(task)}
                     >
                       <EditOutlined fontSize="small" />
                     </IconButton>
                   </Tooltip>
-               
+                  <Tooltip title="Delete">
+                    <IconButton
+                      size="small"
+                      color="error"
+                      aria-label="Delete task"
+                      disabled={isDeleting}
+                      onClick={() => {
+                        if (window.confirm("Delete this task?")) {
+                          deleteNote(task.id);
+                        }
+                      }}
+                    >
+                      <DeleteOutlineOutlined fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </Box>
                 <CardContent
                   sx={{
