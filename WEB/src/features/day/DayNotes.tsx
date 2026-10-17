@@ -10,10 +10,14 @@ import {
   Skeleton,
   Stack,
   Typography,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
 import type { PaginationParams } from "../../lib/types/common";
+import type { DayNoteDto } from "../../lib/types/dayNote"; // adjust path
 import { useGetAllCurrentUserDayNotes } from "../../lib/hooks/useDayNote";
-
+import UpdateDayNoteDialog from "./UpdateDayNotDialog";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 type Props = {
   date: string;
 };
@@ -25,6 +29,7 @@ export default function DayNotes({ date }: Props) {
     page: 1,
     pageSize: 12,
   });
+  const [editingNote, setEditingNote] = useState<DayNoteDto | null>(null);
 
   const { data, isPending, isError, error } = useGetAllCurrentUserDayNotes(
     pagination,
@@ -61,7 +66,10 @@ export default function DayNotes({ date }: Props) {
             <Card
               variant="outlined"
               sx={{
+                position: "relative",
                 height: "100%",
+                display: "flex",
+                flexDirection: "column",
                 borderRadius: 2,
                 transition: "all 0.2s",
                 "&:hover": {
@@ -71,15 +79,30 @@ export default function DayNotes({ date }: Props) {
                 },
               }}
             >
+              <Tooltip title="Update">
+                <IconButton
+                  size="small"
+                  aria-label="Update note"
+                  onClick={() => setEditingNote(note)}
+                  sx={{ position: "absolute", top: 8, right: 8 }}
+                >
+                  <EditOutlinedIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+
               <CardContent
                 sx={{
+                  flex: 1,
                   display: "flex",
                   flexDirection: "column",
-                  height: "100%",
                   gap: 1,
                 }}
               >
-                <Typography variant="subtitle1" noWrap sx={{ fontWeight: 600 }}>
+                <Typography
+                  variant="subtitle1"
+                  noWrap
+                  sx={{ fontWeight: 600, pr: 4 }}
+                >
                   {note.title}
                 </Typography>
 
@@ -117,6 +140,14 @@ export default function DayNotes({ date }: Props) {
             size="small"
           />
         </Box>
+      )}
+
+      {editingNote && (
+        <UpdateDayNoteDialog
+          key={editingNote.id}
+          note={editingNote}
+          onClose={() => setEditingNote(null)}
+        />
       )}
     </Stack>
   );
