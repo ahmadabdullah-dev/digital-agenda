@@ -6,18 +6,23 @@ import {
   Card,
   CardContent,
   Grid,
+  IconButton,
   Pagination,
   Skeleton,
   Stack,
-  Typography,
   Tooltip,
-  IconButton,
+  Typography,
 } from "@mui/material";
-import type { PaginationParams } from "../../lib/types/common";
-import type { DayNoteDto } from "../../lib/types/dayNote"; // adjust path
-import { useGetAllCurrentUserDayNotes } from "../../lib/hooks/useDayNote";
-import UpdateDayNoteDialog from "./UpdateDayNotDialog";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
+import type { PaginationParams } from "../../lib/types/common";
+import type { DayNoteDto } from "../../lib/types/dayNote";
+import {
+  useDeleteDayNote,
+  useGetAllCurrentUserDayNotes,
+} from "../../lib/hooks/useDayNote";
+import UpdateDayNoteDialog from "./UpdateDayNotDialog";
+
 type Props = {
   date: string;
 };
@@ -35,6 +40,7 @@ export default function DayNotes({ date }: Props) {
     pagination,
     date,
   );
+  const { mutate: deleteNote, isPending: isDeleting } = useDeleteDayNote();
 
   if (isPending) {
     return (
@@ -79,16 +85,34 @@ export default function DayNotes({ date }: Props) {
                 },
               }}
             >
-              <Tooltip title="Update">
-                <IconButton
-                  size="small"
-                  aria-label="Update note"
-                  onClick={() => setEditingNote(note)}
-                  sx={{ position: "absolute", top: 8, right: 8 }}
-                >
-                  <EditOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
+              <Box
+                sx={{ position: "absolute", top: 8, right: 8, display: "flex" }}
+              >
+                <Tooltip title="Update">
+                  <IconButton
+                    size="small"
+                    aria-label="Update note"
+                    onClick={() => setEditingNote(note)}
+                  >
+                    <EditOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete">
+                  <IconButton
+                    size="small"
+                    color="error"
+                    aria-label="Delete note"
+                    disabled={isDeleting}
+                    onClick={() => {
+                      if (window.confirm("Delete this note?")) {
+                        deleteNote(note.id);
+                      }
+                    }}
+                  >
+                    <DeleteOutlineIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Box>
 
               <CardContent
                 sx={{
@@ -101,7 +125,7 @@ export default function DayNotes({ date }: Props) {
                 <Typography
                   variant="subtitle1"
                   noWrap
-                  sx={{ fontWeight: 600, pr: 4 }}
+                  sx={{ fontWeight: 600, pr: 9 }}
                 >
                   {note.title}
                 </Typography>

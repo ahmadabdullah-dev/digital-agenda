@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import agent from "../api/agent";
-import type { AddDayNoteDto, DayNoteDto, UpdateDayNoteDto } from "../types/dayNote";
+import type {
+  AddDayNoteDto,
+  DayNoteDto,
+  UpdateDayNoteDto,
+} from "../types/dayNote";
 import type { PaginatedList, PaginationParams } from "../types/common";
 
 export function useAddDayNote() {
@@ -36,6 +40,17 @@ export function useUpdateDayNote() {
   return useMutation({
     mutationFn: (dto: UpdateDayNoteDto) =>
       agent.put<string>("/DayNote/day-note", dto).then((res) => res.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["daynote"] });
+    },
+  });
+}
+export function useDeleteDayNote() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) =>
+      agent.delete<string>(`/DayNote/day-note/${id}`).then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["daynote"] });
     },
