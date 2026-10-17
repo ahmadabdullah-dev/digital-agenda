@@ -11,10 +11,13 @@ import {
   Stack,
   Typography,
   Tooltip,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import type { PaginationParams } from "../../../lib/types/common";
-import { useDeleteDayTask, useGetAllCurrentUserDayTasks } from "../../../lib/hooks/useDayTask";
+import {
+  useDeleteDayTask,
+  useGetAllCurrentUserDayTasks,
+} from "../../../lib/hooks/useDayTask";
 import type { DayTaskDto } from "../../../lib/types/dayTask";
 import UpdateDayTaskDialog from "./UpdateDayTaskDialog";
 import { DeleteOutlineOutlined, EditOutlined } from "@mui/icons-material";
@@ -85,6 +88,7 @@ export default function DayTasks({ date }: Props) {
                 }}
               >
                 <Box
+                  onClick={(e) => e.stopPropagation()}
                   sx={{
                     position: "absolute",
                     top: 8,
