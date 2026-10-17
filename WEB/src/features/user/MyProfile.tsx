@@ -173,7 +173,7 @@ export default function MyProfile() {
             <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
               <Button
                 component={RouterLink}
-                to="/settings"
+                to="/user/settings"
                 variant="outlined"
                 startIcon={<SettingsOutlinedIcon />}
                 sx={{ px: 0 }}
