@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import AddDayNote from "./note/AddDayNote";
 import DayNotes from "./note/DayNotes";
 import { Shared } from "../../lib/shared";
+import DayTasks from "./task/DayTasks";
 
 export default function Day() {
   const { date } = useParams<{ date: string }>();
@@ -45,7 +46,9 @@ export default function Day() {
 
         <Stack spacing={3}>
           <AddDayNote key={date} date={date} />
+          <DayTasks key={date} date={date}  />
           <DayNotes key={date} date={date} />
+
         </Stack>
       </Stack>
     </Container>
