@@ -9,8 +9,8 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { useUpdateDayNote } from "../../lib/hooks/useDayNote";
-import type { DayNoteDto, UpdateDayNoteDto } from "../../lib/types/dayNote"; // adjust path
+import { useUpdateDayNote } from "../../../lib/hooks/useDayNote";
+import type { DayNoteDto, UpdateDayNoteDto } from "../../../lib/types/dayNote"; // adjust path
 
 type Props = {
   note: DayNoteDto;

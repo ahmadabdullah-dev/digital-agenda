@@ -15,13 +15,13 @@ import {
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
-import type { PaginationParams } from "../../lib/types/common";
-import type { DayNoteDto } from "../../lib/types/dayNote";
+import type { PaginationParams } from "../../../lib/types/common";
+import type { DayNoteDto } from "../../../lib/types/dayNote";
 import {
   useDeleteDayNote,
   useGetAllCurrentUserDayNotes,
-} from "../../lib/hooks/useDayNote";
-import UpdateDayNoteDialog from "./UpdateDayNotDialog";
+} from "../../../lib/hooks/useDayNote";
+import UpdateDayNoteDialog from "./UpdateDayNoteDialog";
 
 type Props = {
   date: string;

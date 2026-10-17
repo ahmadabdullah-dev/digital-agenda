@@ -1,7 +1,7 @@
 import { Container, Stack, Typography, Divider, Box } from "@mui/material";
 import { useParams } from "react-router";
-import AddDayNote from "./AddDayNote";
-import DayNotes from "./DayNotes";
+import AddDayNote from "./note/AddDayNote";
+import DayNotes from "./note/DayNotes";
 import { Shared } from "../../lib/shared";
 
 export default function Day() {
@@ -21,7 +21,7 @@ export default function Day() {
             borderStyle: "dashed",
           }}
         >
-          <Typography color="text.secondary" sx={{fontWeight:"500"}}>
+          <Typography color="text.secondary" sx={{ fontWeight: "500" }}>
             No date provided
           </Typography>
         </Box>

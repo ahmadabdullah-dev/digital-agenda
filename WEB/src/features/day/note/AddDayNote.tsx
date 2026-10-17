@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Stack, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
-import type { AddDayNoteDto } from "../../lib/types/dayNote";
-import { useAddDayNote } from "../../lib/hooks/useDayNote";
+import type { AddDayNoteDto } from "../../../lib/types/dayNote";
+import { useAddDayNote } from "../../../lib/hooks/useDayNote";
 
 type Props = {
   date: string;
