@@ -4,6 +4,7 @@ import AddDayNote from "./note/AddDayNote";
 import DayNotes from "./note/DayNotes";
 import { Shared } from "../../lib/shared";
 import DayTasks from "./task/DayTasks";
+import AddDayTask from "./task/AddDayTask";
 
 export default function Day() {
   const { date } = useParams<{ date: string }>();
@@ -45,10 +46,10 @@ export default function Day() {
         </Stack>
 
         <Stack spacing={3}>
+          <AddDayTask key={date} date={date} />
           <AddDayNote key={date} date={date} />
           <DayTasks key={date} date={date}  />
           <DayNotes key={date} date={date} />
-
         </Stack>
       </Stack>
     </Container>

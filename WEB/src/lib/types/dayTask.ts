@@ -4,3 +4,7 @@ export type DayTaskDto = {
   isCompleted: boolean;
   createdDate: string;
 };
+export type AddDayTaskDto = {
+  date: string;
+  title: string;
+};

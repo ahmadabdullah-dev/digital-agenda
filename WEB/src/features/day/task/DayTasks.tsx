@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import type { PaginationParams } from "../../../lib/types/common";
-import { useGetAllCurrentUserDayTasks } from "../../../lib/hooks/useDayTasks";
+import { useGetAllCurrentUserDayTasks } from "../../../lib/hooks/useDayTask";
 
 type Props = {
   date: string;
