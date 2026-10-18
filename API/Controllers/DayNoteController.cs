@@ -13,9 +13,9 @@ public class DayNoteController : BaseApiController
         _dayNoteService = dayNoteService;
     }
     [HttpPost("day-note")]
-    public async Task<IActionResult> AddDayNote(AddDayNoteDto dto, CancellationToken ct)
+    public async Task<IActionResult> AddDayNoteToCurrentUser(AddDayNoteDto dto, CancellationToken ct)
     {
-        var result = await _dayNoteService.AddDayNoteAsync(dto, ct);
+        var result = await _dayNoteService.AddDayNoteToCurrentUserAsync(dto, ct);
         return HandleResult(result);
     }
     [HttpGet("all-curent-user-day-notes/{date}")]
