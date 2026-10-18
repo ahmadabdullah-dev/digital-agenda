@@ -15,6 +15,8 @@ export function useAddDayNote() {
       agent.post<string>("/DayNote/day-note", dto).then((res) => res.data),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["daynote", variables.date] });
+      queryClient.invalidateQueries({ queryKey: ["NotesCount", variables.date] });
+
     },
   });
 }
@@ -42,6 +44,8 @@ export function useUpdateDayNote() {
       agent.put<string>("/DayNote/day-note", dto).then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["daynote"] });
+      queryClient.invalidateQueries({ queryKey: ["NotesCount"] });
+
     },
   });
 }
@@ -53,6 +57,7 @@ export function useDeleteDayNote() {
       agent.delete<string>(`/DayNote/day-note/${id}`).then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["daynote"] });
+      queryClient.invalidateQueries({ queryKey: ["NotesCount"] });
     },
   });
 }
@@ -60,7 +65,19 @@ export const useGetAllDaysNotesCount = () =>
   useQuery<number>({
     queryKey: ["AllDaysNotesCount"],
     queryFn: () =>
-      agent.get<number>(`/DayNote/all-days-notes-count`).then((res) => res.data),
+      agent
+        .get<number>(`/DayNote/all-days-notes-count`)
+        .then((res) => res.data),
+    staleTime: 5 * 60 * 1000,
+    retry: false,
+  });
+export const useGetNotesCount = (date: string) =>
+  useQuery<number>({
+    queryKey: ["NotesCount", date],
+    queryFn: () =>
+      agent
+        .get<number>(`/DayNote/day-notes-count/${date}`)
+        .then((res) => res.data),
     staleTime: 5 * 60 * 1000,
     retry: false,
   });
