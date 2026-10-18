@@ -162,7 +162,7 @@ public class DayTaskService : IDayTaskService
             return Result<int>.Failure("Unexpected error happend while counting the day tasks", 400);
         }
     }
-    public async Task<Result<int>> GetCurrentUserCompletedDayTasksCountAsync(CancellationToken ct)
+    public async Task<Result<int>> GetCurrentUserAllCompletedDaysTasksCountAsync(CancellationToken ct)
     {
         var currentUserId = _userService.GetCurrentUserId();
 
@@ -174,6 +174,54 @@ public class DayTaskService : IDayTaskService
         try
         {
             counts = await _dayTaskRepository.GetUserAllCompletedDaysTasksCountAsync(currentUserId, ct);
+            return Result<int>.Success(counts);
+
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch
+        {
+            return Result<int>.Failure("Unexpected error happend while counting the completed day tasks", 400);
+        }
+    }
+    public async Task<Result<int>> GetCurrentUserDayTasksCountAsync(DateOnly date, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<int>.Failure("User not authenticated", 401);
+
+        int counts = 0;
+
+        try
+        {
+            counts = await _dayTaskRepository.GetUserDayTasksCountAsync(currentUserId,date, ct);
+            return Result<int>.Success(counts);
+
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch
+        {
+            return Result<int>.Failure("Unexpected error happend while counting the day tasks", 400);
+        }
+    }
+    public async Task<Result<int>> GetCurrentUserCompletedDayTasksCountAsync(DateOnly date, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<int>.Failure("User not authenticated", 401);
+
+        int counts = 0;
+
+        try
+        {
+            counts = await _dayTaskRepository.GetUserCompletedDayTasksCountAsync(currentUserId,date, ct);
             return Result<int>.Success(counts);
 
         }

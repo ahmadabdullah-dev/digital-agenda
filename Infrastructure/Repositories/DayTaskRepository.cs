@@ -10,8 +10,13 @@ public class DayTaskRepository : Repository<DayTask>, IDayTaskRepository
         var query = DbSet.AsNoTracking().Where(dt => dt.UserId == userId && dt.Date == date).OrderByDescending(x => x.Date).ThenBy(x => x.Id);
         return await PagedList<DayTask>.CreateAsync(query, p.Page, p.PageSize, ct);
     }
-    public async Task<int> GetUserAllDaysTasksCountAsync(string userId, CancellationToken ct) => await DbSet.CountAsync(x => x.UserId == userId, ct);
-    public async Task<int> GetUserAllCompletedDaysTasksCountAsync(string userId, CancellationToken ct) =>
-        await DbSet.CountAsync(x => x.UserId == userId && x.IsCompleted == true, ct);
+    public async Task<int> GetUserAllDaysTasksCountAsync(string userId, CancellationToken ct)
+        => await DbSet.CountAsync(x => x.UserId == userId, ct);
+    public async Task<int> GetUserAllCompletedDaysTasksCountAsync(string userId, CancellationToken ct)
+        => await DbSet.CountAsync(x => x.UserId == userId && x.IsCompleted == true, ct);
+    public async Task<int> GetUserCompletedDayTasksCountAsync(string userId, DateOnly date, CancellationToken ct)
+        => await DbSet.CountAsync(x => x.UserId == userId && x.IsCompleted == true && x.Date == date, ct);
+    public async Task<int> GetUserDayTasksCountAsync(string userId, DateOnly date, CancellationToken ct)
+        => await DbSet.CountAsync(x => x.UserId == userId && x.Date == date, ct);
 
 }
