@@ -1,5 +1,9 @@
+import DayTasksCount from "../features/day/task/DayTasksCount";
+
 export default function Dashboard() {
   return (
-    <div>Dashboard</div>
-  )
+    <div>
+      <DayTasksCount />
+    </div>
+  );
 }
