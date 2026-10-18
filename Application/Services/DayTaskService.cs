@@ -147,4 +147,28 @@ public class DayTaskService : IDayTaskService
             return Result<int>.Failure("Unexpected error happend while counting the day tasks", 400);
         }
     }
+    public async Task<Result<int>> GetCurrentUserCompletedDayTasksCountAsync(CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<int>.Failure("User not authenticated", 401);
+
+        int counts = 0;
+
+        try
+        {
+            counts = await _dayTaskRepository.GetUserCompletedDayTasksCountAsync(currentUserId, ct);
+            return Result<int>.Success(counts);
+
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch
+        {
+            return Result<int>.Failure("Unexpected error happend while counting the completed day tasks", 400);
+        }
+    }
 }

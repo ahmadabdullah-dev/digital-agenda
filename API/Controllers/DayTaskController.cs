@@ -42,4 +42,10 @@ public class DayTaskController : BaseApiController
         var result = await _dayTaskService.GetCurrentUserDayTasksCountAsync(ct);
         return HandleResult(result);
     }
+    [HttpGet("completed-day-tasks-count")]
+    public async Task<IActionResult> GetCurrentUserCompletedDayTasksCount(CancellationToken ct)
+    {
+        var result = await _dayTaskService.GetCurrentUserCompletedDayTasksCountAsync(ct);
+        return HandleResult(result);
+    }
 }

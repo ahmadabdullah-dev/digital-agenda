@@ -11,5 +11,7 @@ public class DayTaskRepository : Repository<DayTask>, IDayTaskRepository
         return await PagedList<DayTask>.CreateAsync(query, p.Page, p.PageSize, ct);
     }
     public async Task<int> GetUserDayTasksCountAsync(string userId, CancellationToken ct) => await DbSet.CountAsync(x => x.UserId == userId, ct);
+    public async Task<int> GetUserCompletedDayTasksCountAsync(string userId, CancellationToken ct) =>
+        await DbSet.CountAsync(x => x.UserId == userId && x.IsCompleted == true, ct);
 
 }
