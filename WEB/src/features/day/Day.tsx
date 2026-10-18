@@ -17,6 +17,11 @@ import DayNotes from "./note/DayNotes";
 import { Shared } from "../../lib/shared";
 import DayTasks from "./task/DayTasks";
 import AddDayTask from "./task/AddDayTask";
+import DayTasksCountCard from "./task/DayTasksCountCard";
+import {
+  useGetCompletedDayTasksCount,
+  useGetDayTasksCount,
+} from "../../lib/hooks/useDayTask";
 
 function toISODate(d: Date) {
   const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -53,6 +58,8 @@ export default function Day() {
   const goTo = (target: string) => navigate(`/day/${target}`);
   const goToToday = () => goTo(toISODate(new Date()));
 
+  const total = useGetDayTasksCount(date!);
+  const completed = useGetCompletedDayTasksCount(date!);
   if (!date) {
     return (
       <Container maxWidth="md" sx={{ py: 10 }}>
@@ -129,6 +136,10 @@ export default function Day() {
           }}
         >
           <Section title="Tasks">
+            <DayTasksCountCard
+              total={total.data ?? 0}
+              completed={completed.data ?? 0}
+            />
             <AddDayTask date={date} />
             <DayTasks date={date} />
           </Section>

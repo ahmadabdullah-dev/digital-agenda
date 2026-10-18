@@ -30,7 +30,11 @@ export function useAddDayTask() {
     mutationFn: (dto: AddDayTaskDto) =>
       agent.post<string>("/DayTask/day-task", dto).then((res) => res.data),
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["daytask", variables.date] });
+         queryClient.invalidateQueries({ queryKey: ["daytask", variables.date] });
+         queryClient.invalidateQueries({ queryKey: ["AllDaysTaskCount"] });
+         queryClient.invalidateQueries({queryKey: ["AllCompletedDaysTaskCount"],});
+         queryClient.invalidateQueries({ queryKey: ["CompletedDayTaskCount", variables.date] });
+         queryClient.invalidateQueries({ queryKey: ["DayTaskCount",variables.date] }); 
     },
   });
 }
@@ -41,7 +45,11 @@ export function useUpdateDayTask() {
     mutationFn: (dto: UpdateDayTaskDto) =>
       agent.put<string>("/DayTask/day-task", dto).then((res) => res.data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["daytask"] });
+         queryClient.invalidateQueries({ queryKey: ["daytask"] });
+         queryClient.invalidateQueries({ queryKey: ["AllDaysTaskCount"]});
+         queryClient.invalidateQueries({ queryKey: ["AllCompletedDaysTaskCount"]});
+         queryClient.invalidateQueries({ queryKey: ["CompletedDayTaskCount"] });
+         queryClient.invalidateQueries({ queryKey: ["DayTaskCount"] }); 
     },
   });
 }
@@ -54,6 +62,10 @@ export function useDeleteDayTask() {
       agent.delete<string>(`/DayTask/day-task/${id}`).then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["daytask"] });
+      queryClient.invalidateQueries({ queryKey: ["AllDaysTaskCount"] });
+      queryClient.invalidateQueries({queryKey:  ["AllCompletedDaysTaskCount"]});
+      queryClient.invalidateQueries({ queryKey: ["CompletedDayTaskCount"] });
+      queryClient.invalidateQueries({ queryKey: ["DayTaskCount"] });
     },
   });
 }
@@ -61,7 +73,9 @@ export const useGetAllDaysTasksCount = () =>
   useQuery<number>({
     queryKey: ["AllDaysTaskCount"],
     queryFn: () =>
-      agent.get<number>(`/DayTask/all-days-tasks-count`).then((res) => res.data),
+      agent
+        .get<number>(`/DayTask/all-days-tasks-count`)
+        .then((res) => res.data),
     staleTime: 5 * 60 * 1000,
     retry: false,
   });
@@ -71,6 +85,27 @@ export const useGetAllCompletedDaysTasksCount = () =>
     queryFn: () =>
       agent
         .get<number>(`/DayTask/all-completed-days-tasks-count`)
+        .then((res) => res.data),
+    staleTime: 5 * 60 * 1000,
+    retry: false,
+  });
+
+export const useGetDayTasksCount = (date: string) =>
+  useQuery<number>({
+    queryKey: ["DayTaskCount", date],
+    queryFn: () =>
+      agent
+        .get<number>(`/DayTask/day-tasks-count/${date}`)
+        .then((res) => res.data),
+    staleTime: 5 * 60 * 1000,
+    retry: false,
+  });
+
+export const useGetCompletedDayTasksCount = (date: string) =>
+  useQuery<number>({
+    queryKey: ["CompletedDayTaskCount", date],
+    queryFn: () =>
+      agent.get<number>(`/DayTask/completed-day-tasks-count/${date}`)
         .then((res) => res.data),
     staleTime: 5 * 60 * 1000,
     retry: false,

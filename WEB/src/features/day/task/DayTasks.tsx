@@ -21,10 +21,9 @@ import type { PaginationParams } from "../../../lib/types/common";
 import {
   useDeleteDayTask,
   useGetAllCurrentUserDayTasks,
-} from "../../../lib/hooks/useDayTask";
+  } from "../../../lib/hooks/useDayTask";
 import type { DayTaskDto } from "../../../lib/types/dayTask";
 import UpdateDayTaskDialog from "./UpdateDayTaskDialog";
-
 type Props = {
   date: string;
 };
