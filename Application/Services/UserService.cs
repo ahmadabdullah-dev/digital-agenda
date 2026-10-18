@@ -43,25 +43,25 @@ public class UserService : IUserService
         var userId = GetCurrentUserId();
         var role = GetCurrentUserRole();
 
-        if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(role))
-            return Result<UserDto>.Failure("You must be logged in to perform this action.", 403);
+        if (string.IsNullOrEmpty(userId))
+            return Result<UserDto>.Failure("You must be logged in to perform this action.", 401);
 
         var user = await _userManager.FindByIdAsync(userId);
 
-
         if (user == null)
-            return Result<UserDto>.Failure("User not found!. It may have been removed or deactivated.", 404);
+            return Result<UserDto>.Failure("User not found. It may have been removed or deactivated.", 401);
 
         var dto = new UserDto
         {
-            Id = userId,
-            FirstName = user.FirstName!,
-            LastName = user.LastName!,
-            Email = user.Email!,
+            Id = user.Id,
+            FirstName = user.FirstName ?? "",
+            LastName = user.LastName ?? "",
+            Email = user.Email ?? "",
             IsEmailConfirmed = user.EmailConfirmed,
-            Role = role,
+            Role = role ?? "",
             ImageUrl = user.ImageUrl
         };
+
         return Result<UserDto>.Success(dto);
     }
     public async Task<Result<string>> RequestUpdateCurrentEmailAsync(RequestUpdateCurrentEmailDto dto)
