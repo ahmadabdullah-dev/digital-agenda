@@ -3,18 +3,20 @@ import dayjs from "dayjs";
 import {
   Alert,
   Box,
-  Card,
-  CardContent,
-  Grid,
   IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
   Pagination,
+  Paper,
   Skeleton,
   Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import type { PaginationParams } from "../../../lib/types/common";
 import type { DayNoteDto } from "../../../lib/types/dayNote";
 import {
@@ -26,8 +28,6 @@ import UpdateDayNoteDialog from "./UpdateDayNoteDialog";
 type Props = {
   date: string;
 };
-
-const cardSize = { xs: 12, sm: 6, lg: 4 };
 
 export default function DayNotes({ date }: Props) {
   const [pagination, setPagination] = useState<PaginationParams>({
@@ -44,127 +44,117 @@ export default function DayNotes({ date }: Props) {
 
   if (isPending) {
     return (
-      <Grid container spacing={2}>
-        {Array.from({ length: 6 }).map((_, i) => (
-          <Grid key={i} size={cardSize}>
-            <Skeleton variant="rounded" height={140} />
-          </Grid>
+      <Stack spacing={1}>
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Skeleton key={i} variant="rounded" height={88} />
         ))}
-      </Grid>
+      </Stack>
     );
   }
 
   if (isError) return <Alert severity="error">{error.message}</Alert>;
 
   if (!data || data.items.length === 0) {
-    return <Alert severity="info">No notes for this day yet.</Alert>;
+    return (
+      <Typography color="text.secondary">No notes for this day yet.</Typography>
+    );
   }
 
   return (
-    <Stack spacing={3}>
-      <Typography variant="h5" component="h2" sx={{ fontWeight: 600 }}>
-        Notes
-      </Typography>
-
-      <Grid container spacing={2}>
-        {data.items.map((note) => (
-          <Grid key={note.id} size={cardSize}>
-            <Card
-              variant="outlined"
-              sx={{
-                position: "relative",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                borderRadius: 2,
-                transition: "all 0.2s",
-                "&:hover": {
-                  borderColor: "primary.main",
-                  boxShadow: 2,
-                  transform: "translateY(-2px)",
-                },
-              }}
-            >
-              <Box
-                sx={{ position: "absolute", top: 8, right: 8, display: "flex" }}
+    <>
+      <Stack spacing={2}>
+        <Paper variant="outlined">
+          <List disablePadding>
+            {data.items.map((note, index) => (
+              <ListItem
+                key={note.id}
+                disablePadding
+                divider={index < data.items.length - 1}
+                secondaryAction={
+                  <Box sx={{ display: "flex" }}>
+                    <Tooltip title="Edit">
+                      <IconButton
+                        size="small"
+                        aria-label="Edit note"
+                        onClick={() => setEditingNote(note)}
+                      >
+                        <EditOutlinedIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton
+                        size="small"
+                        color="error"
+                        aria-label="Delete note"
+                        disabled={isDeleting}
+                        onClick={() => {
+                          if (window.confirm("Delete this note?")) {
+                            deleteNote(note.id);
+                          }
+                        }}
+                      >
+                        <DeleteOutlineIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                }
               >
-                <Tooltip title="Update">
-                  <IconButton
-                    size="small"
-                    aria-label="Update note"
-                    onClick={() => setEditingNote(note)}
-                  >
-                    <EditOutlinedIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete">
-                  <IconButton
-                    size="small"
-                    color="error"
-                    aria-label="Delete note"
-                    disabled={isDeleting}
-                    onClick={() => {
-                      if (window.confirm("Delete this note?")) {
-                        deleteNote(note.id);
-                      }
+                <ListItemButton
+                  onClick={() => setEditingNote(note)}
+                  sx={{ py: 1.5, pr: 11, alignItems: "flex-start" }}
+                >
+                  <ListItemText
+                    primary={note.title}
+                    secondary={
+                      <>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            whiteSpace: "pre-wrap",
+                          }}
+                        >
+                          {note.content || "No content"}
+                        </Typography>
+                        <Typography
+                          component="span"
+                          variant="caption"
+                          color="text.disabled"
+                          sx={{ display: "block", mt: 0.5 }}
+                        >
+                          {dayjs(note.createdDate).format("DD MMM, HH:mm")}
+                        </Typography>
+                      </>
+                    }
+                    slotProps={{
+                      primary: { noWrap: true, sx: { fontWeight: 500 } },
+                      secondary: { component: "div" },
                     }}
-                  >
-                    <DeleteOutlineIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Box>
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Paper>
 
-              <CardContent
-                sx={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 1,
-                }}
-              >
-                <Typography
-                  variant="subtitle1"
-                  noWrap
-                  sx={{ fontWeight: 600, pr: 9 }}
-                >
-                  {note.title}
-                </Typography>
-
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    flex: 1,
-                    display: "-webkit-box",
-                    WebkitLineClamp: 4,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                    whiteSpace: "pre-wrap",
-                  }}
-                >
-                  {note.content || "No content"}
-                </Typography>
-
-                <Typography variant="caption" color="text.disabled">
-                  {dayjs(note.createdDate).format("DD MMM YYYY, HH:mm")}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-
-      {data.totalPages > 1 && (
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Pagination
-            count={data.totalPages}
-            page={data.currentPage}
-            onChange={(_, page) => setPagination((prev) => ({ ...prev, page }))}
-            color="primary"
-            size="small"
-          />
-        </Box>
-      )}
+        {data.totalPages > 1 && (
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Pagination
+              count={data.totalPages}
+              page={data.currentPage}
+              onChange={(_, page) =>
+                setPagination((prev) => ({ ...prev, page }))
+              }
+              size="small"
+            />
+          </Box>
+        )}
+      </Stack>
 
       {editingNote && (
         <UpdateDayNoteDialog
@@ -173,6 +163,6 @@ export default function DayNotes({ date }: Props) {
           onClose={() => setEditingNote(null)}
         />
       )}
-    </Stack>
+    </>
   );
 }
