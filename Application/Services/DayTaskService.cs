@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Infrastructure.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Services;
 
@@ -121,5 +122,29 @@ public class DayTaskService : IDayTaskService
             return Result<string>.Failure("Failed to delete task", 500);
         }
         return Result<string>.Success("Task updated successfully");
+    }
+    public async Task<Result<int>> GetCurrentUserDayTasksCountAsync(CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<int>.Failure("User not authenticated", 401);
+
+        int counts = 0;
+
+        try
+        {
+            counts = await _dayTaskRepository.GetUserDayTasksCountAsync(currentUserId, ct);
+            return Result<int>.Success(counts);
+
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch
+        {
+            return Result<int>.Failure("Unexpected error happend while counting the day tasks", 400);
+        }
     }
 }

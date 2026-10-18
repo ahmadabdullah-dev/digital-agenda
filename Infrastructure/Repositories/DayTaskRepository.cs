@@ -10,4 +10,6 @@ public class DayTaskRepository : Repository<DayTask>, IDayTaskRepository
         var query = DbSet.AsNoTracking().Where(dt => dt.UserId == userId && dt.Date == date).OrderByDescending(x => x.Date).ThenBy(x => x.Id);
         return await PagedList<DayTask>.CreateAsync(query, p.Page, p.PageSize, ct);
     }
+    public async Task<int> GetUserDayTasksCountAsync(string userId, CancellationToken ct) => await DbSet.CountAsync(x => x.UserId == userId, ct);
+
 }
