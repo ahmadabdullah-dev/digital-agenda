@@ -72,10 +72,18 @@ public class DayNoteService : IDayNoteService
     }
     public async Task<Result<string>> DeleteDayNoteAsync(string noteId, CancellationToken ct)
     {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (string.IsNullOrEmpty(currentUserId))
+            return Result<string>.Failure("User is not authenticated.", 401);
+
         var entity = await _dayNoteRepository.GetByIdAsync(noteId, ct);
 
         if (entity is null)
             return Result<string>.Failure("Note not found", 404);
+      
+        if (entity.UserId != currentUserId)
+            return Result<string>.Failure("Unauthorized to delete this", 401);
 
         try
         {
