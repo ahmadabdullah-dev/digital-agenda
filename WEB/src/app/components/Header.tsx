@@ -11,7 +11,8 @@ import { useEffect, useState } from "react";
 import AppLogoWithName from "./AppLogoWithName";
 
 const NAV_LINKS = [
-  { label: "Dashboard", href: "/dashboard" },
+  { label: "Dashboard", href: "/dashboard" }, 
+   { label: "Calendar", href: "/calendar" },
   { label: "My Profile", href: "/my-profile" },
 ];
 

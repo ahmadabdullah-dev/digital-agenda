@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router";
 import App from "../App";
 import ErrorPage from "../../features/errors/ErrorPage";
 import NotFound from "../../features/errors/NotFound";
-import LandingPage from "../LandingPage";
 import LoginForm from "../../features/auth/LoginForm";
 import RegisterForm from "../../features/auth/RegisterForm";
 import ForgetPasswordForm from "../../features/auth/ForgetPassword";
@@ -14,6 +13,8 @@ import Dashboard from "../Dashboard";
 import MyProfile from "../../features/user/MyProfile";
 import Day from "../../features/day/Day";
 import UserSettings from "../../features/user/UserSettings";
+import MonthlyCalendar from "../../features/calendar/MonthlyCalendar";
+import LandingPage from "../LandingPage";
 
 export const routes = createBrowserRouter([
   {
@@ -21,7 +22,7 @@ export const routes = createBrowserRouter([
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <LandingPage /> },
+      { index: true, element: <LandingPage/> },
       {
         element: <RequireAuth />,
         children: [
@@ -32,6 +33,7 @@ export const routes = createBrowserRouter([
               { path: "my-profile", element: <MyProfile /> },
               { path: "day/:date", element: <Day /> },
               { path: "user/settings", element: <UserSettings /> },
+              { path: "calendar", element: <MonthlyCalendar /> },
             ],
           },
           { path: "/confirm-email", element: <ConfirmEmailForm /> },
