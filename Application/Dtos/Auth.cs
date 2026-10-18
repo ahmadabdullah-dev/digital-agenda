@@ -22,3 +22,5 @@ public class ResetPasswordDto
     public required string Code { get; set; }
     public required string NewPassword { get; set; }
 }
+public record ForgetPasswordRequestDto(string Email);
+public record ConfirmCurrentEmailDto(string Code);

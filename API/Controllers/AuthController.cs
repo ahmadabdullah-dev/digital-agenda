@@ -37,9 +37,9 @@ public class AuthController : BaseApiController
     }
     [Authorize]
     [HttpPatch("confirm-current-email")]
-    public async Task<IActionResult> ConfirmCurrentEmail(string code)
+    public async Task<IActionResult> ConfirmCurrentEmail(ConfirmCurrentEmailDto dto)
     {
-        var result = await _authService.ConfirmCurrentEmailAsync(code);
+        var result = await _authService.ConfirmCurrentEmailAsync(dto.Code);
 
         return HandleResult(result);
     }
@@ -53,9 +53,9 @@ public class AuthController : BaseApiController
     }
     [EnableRateLimiting("notificationLimiter")]
     [HttpPost("forget-password")]
-    public async Task<IActionResult> ForgetPassword(string email)
+    public async Task<IActionResult> ForgetPassword(ForgetPasswordRequestDto dto)
     {
-        var result = await _authService.ForgetPasswordAsync(email);
+        var result = await _authService.ForgetPasswordAsync(dto.Email);
         return HandleResult(result);
     }
     [HttpPost("reset-password")]

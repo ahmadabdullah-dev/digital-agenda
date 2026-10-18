@@ -31,9 +31,7 @@ export function useRegisterUser() {
 export const useForgetPasswordAsync = () => {
   return useMutation({
     mutationFn: async (email: string) => {
-      const response = await agent.post("/auth/forget-password", null, {
-        params: { email },
-      });
+      const response = await agent.post("/auth/forget-password", { email });
       return response.data;
     },
   });
@@ -61,12 +59,17 @@ export const useResetPasswordAsync = () => {
   });
 };
 export const useConfirmEmailAsync = () => {
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
+
   return useMutation({
     mutationFn: async (code: string) => {
-      const response = await agent.patch("/auth/confirm-email", null, {
-        params: { code },
-      });
+      const response = await agent.patch("/auth/confirm-current-email", {code});
       return response.data;
+    },
+    onSuccess: () => {
+     queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+     navigate("/dashboard")
     },
   });
 };
