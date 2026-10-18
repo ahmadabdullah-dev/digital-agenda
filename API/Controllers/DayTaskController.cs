@@ -19,9 +19,9 @@ public class DayTaskController : BaseApiController
         return HandleResult(result);
     }
     [HttpPost("day-task")]
-    public async Task<IActionResult> AddDayTask(AddDayTaskDto dto, CancellationToken ct)
+    public async Task<IActionResult> AddDayTaskToCurrentUser(AddDayTaskDto dto, CancellationToken ct)
     {
-        var result = await _dayTaskService.AddDayTaskAsync(dto, ct);
+        var result = await _dayTaskService.AddDayTaskToCurrentUserAsync(dto, ct);
         return HandleResult(result);
     }
     [HttpDelete("day-task/{taskId}")]

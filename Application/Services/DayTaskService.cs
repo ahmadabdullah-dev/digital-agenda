@@ -43,7 +43,7 @@ public class DayTaskService : IDayTaskService
 
         return Result<PagedList<DayTaskDto>>.Success(dtos);
     }
-    public async Task<Result<string>> AddDayTaskAsync(AddDayTaskDto dto, CancellationToken ct)
+    public async Task<Result<string>> AddDayTaskToCurrentUserAsync(AddDayTaskDto dto, CancellationToken ct)
     {
         var currentUserId = _userService.GetCurrentUserId();
 
