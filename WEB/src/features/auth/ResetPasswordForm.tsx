@@ -110,9 +110,9 @@ export default function ResetPasswordForm() {
                   "Continue"
                 )}
               </Button>
-              {resetPassword.data?.isSuccess && (
+              {resetPassword.isSuccess && (
                 <Alert severity="success">
-                  {resetPassword.data.value}
+                  {resetPassword.data}
                 </Alert>
               )}
               {resetPassword.error && (
