@@ -1,12 +1,12 @@
 import { Alert, Box, CircularProgress, Paper, Typography } from "@mui/material";
 import {
-  useGetDayTasksCount,
-  useGetCompletedDayTasksCount,
+  useGetAllDaysTasksCount,
+  useGetAllCompletedDaysTasksCount,
 } from "../../../lib/hooks/useDayTask";
 
-export default function DayTasksCount() {
-  const total = useGetDayTasksCount();
-  const completed = useGetCompletedDayTasksCount();
+export default function AllDaysTasksCount() {
+  const total = useGetAllDaysTasksCount();
+  const completed = useGetAllCompletedDaysTasksCount();
 
   if (total.isLoading || completed.isLoading)
     return <CircularProgress size={24} />;
@@ -68,7 +68,7 @@ export default function DayTasksCount() {
       </Box>
 
       <Box sx={{ minWidth: 0 }}>
-        <Typography variant="subtitle2">All Tasks</Typography>
+        <Typography variant="subtitle2">All Days Tasks</Typography>
         <Typography variant="body2" color="text.secondary">
           {completedCount} of {totalCount} completed
         </Typography>

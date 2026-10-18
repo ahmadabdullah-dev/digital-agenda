@@ -57,18 +57,21 @@ export function useDeleteDayTask() {
     },
   });
 }
-export const useGetDayTasksCount = () =>
+export const useGetAllDaysTasksCount = () =>
   useQuery<number>({
-    queryKey: ["daytaskcount"],
+    queryKey: ["AllDaysTaskCount"],
     queryFn: () =>
       agent.get<number>(`/DayTask/day-tasks-count`).then((res) => res.data),
     staleTime: 5 * 60 * 1000,
     retry: false,
   });
-export const useGetCompletedDayTasksCount = () =>
+export const useGetAllCompletedDaysTasksCount = () =>
   useQuery<number>({
-    queryKey: ["completeddaytaskcount"],
-    queryFn: () => agent.get<number>(`/DayTask/completed-day-tasks-count`).then((res) => res.data),
+    queryKey: ["AllCompletedDaysTaskCount"],
+    queryFn: () =>
+      agent
+        .get<number>(`/DayTask/completed-day-tasks-count`)
+        .then((res) => res.data),
     staleTime: 5 * 60 * 1000,
     retry: false,
   });

@@ -56,3 +56,11 @@ export function useDeleteDayNote() {
     },
   });
 }
+export const useGetAllDaysNotesCount = () =>
+  useQuery<number>({
+    queryKey: ["notescount"],
+    queryFn: () =>
+      agent.get<number>(`/DayNote/day-notes-count`).then((res) => res.data),
+    staleTime: 5 * 60 * 1000,
+    retry: false,
+  });

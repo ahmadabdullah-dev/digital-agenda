@@ -1,9 +1,11 @@
-import DayTasksCount from "../features/day/task/DayTasksCount";
+import AllDaysNotesCount from "../features/day/note/AllDaysNotesCount";
+import AllDaysTasksCount from "../features/day/task/AllDaysTasksCount";
 
 export default function Dashboard() {
   return (
     <div>
-      <DayTasksCount />
+      <AllDaysTasksCount />
+      <AllDaysNotesCount />
     </div>
   );
 }
