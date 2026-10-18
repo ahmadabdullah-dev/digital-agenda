@@ -37,20 +37,16 @@ export const useRequestUpdateCurrentEmail = () => {
 
 export const useUpdateCurrentEmail = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (dto: UpdateCurrentEmailDto) => {
-      const response = await agent.patch<string>(
-        "/User/update-current-email",
-        dto,
-      );
+      const response = await agent.patch<string>("/User/current-email", dto);
       return response.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] }),
   });
 };
-
 export const useResendCurrentEmailConfirmationCode = () => {
   return useMutation({
     mutationFn: async () => {
