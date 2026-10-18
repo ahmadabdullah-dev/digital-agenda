@@ -96,11 +96,19 @@ public class DayNoteService : IDayNoteService
     }
     public async Task<Result<string>> UpdateDayNoteAsync(UpdateDayNoteDto dto, CancellationToken ct)
     {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (string.IsNullOrEmpty(currentUserId))
+            return Result<string>.Failure("User is not authenticated.", 401);
+
         var entity = await _dayNoteRepository.GetByIdAsync(dto.Id);
 
         if (entity is null)
             return Result<string>.Failure("Note not found", 404);
-        
+
+        if (entity.UserId != currentUserId)
+            return Result<string>.Failure("Unauthorized to update this",401);
+
         if (dto.Title != null)
             entity.Title = dto.Title;
 
