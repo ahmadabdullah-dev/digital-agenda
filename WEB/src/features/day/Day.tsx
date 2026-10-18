@@ -1,69 +1,23 @@
-import {
-  Box,
-  Button,
-  Container,
-  IconButton,
-  Paper,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import type { ReactNode } from "react";
+import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router";
-import AddDayNote from "./note/AddDayNote";
-import DayNotes from "./note/DayNotes";
 import { Shared } from "../../lib/shared";
-import DayTasks from "./task/DayTasks";
-import AddDayTask from "./task/AddDayTask";
-import DayTasksCountCard from "./task/DayTasksCountCard";
 import {
   useGetCompletedDayTasksCount,
   useGetDayTasksCount,
 } from "../../lib/hooks/useDayTask";
-import DayNotesCountCard from "./note/DayNotesCountCard";
 import { useGetNotesCount } from "../../lib/hooks/useDayNote";
-
-function toISODate(d: Date) {
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${d.getFullYear()}-${month}-${day}`;
-}
-
-function shiftDate(date: string, days: number) {
-  const [y, m, d] = date.split("-").map(Number);
-  return toISODate(new Date(y, m - 1, d + days));
-}
-
-function Section({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <Paper
-      variant="outlined"
-      component="section"
-      sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, height: "100%" }}
-    >
-      <Stack spacing={3}>
-        <Typography variant="h6" component="h2" sx={{ fontWeight: 600 }}>
-          {title}
-        </Typography>
-        {children}
-      </Stack>
-    </Paper>
-  );
-}
+import DayHeader from "./DayHeader";
+import DaySection from "./DaySection";
+import AddDayNote from "./note/AddDayNote";
+import DayNotes from "./note/DayNotes";
+import DayNotesCountCard from "./note/DayNotesCountCard";
+import AddDayTask from "./task/AddDayTask";
+import DayTasks from "./task/DayTasks";
+import DayTasksCountCard from "./task/DayTasksCountCard";
 
 export default function Day() {
   const { date } = useParams<{ date: string }>();
   const navigate = useNavigate();
-
-  const goTo = (target: string) => navigate(`/day/${target}`);
-  const goToToday = () => goTo(toISODate(new Date()));
-
-  const totalTaskCount = useGetDayTasksCount(date!);
-  const completedTaskCount = useGetCompletedDayTasksCount(date!);
-  const notesCount = useGetNotesCount(date!);
-
 
   if (!date) {
     return (
@@ -82,7 +36,10 @@ export default function Day() {
           <Typography color="text.secondary" sx={{ fontWeight: 500, mb: 2 }}>
             No date provided
           </Typography>
-          <Button variant="contained" onClick={goToToday}>
+          <Button
+            variant="contained"
+            onClick={() => navigate(`/day/${Shared.toISODate(new Date())}`)}
+          >
             Open today
           </Button>
         </Box>
@@ -90,46 +47,18 @@ export default function Day() {
     );
   }
 
-  const isToday = date === toISODate(new Date());
+  return <DayView date={date} />;
+}
+
+function DayView({ date }: { date: string }) {
+  const totalTasks = useGetDayTasksCount(date);
+  const completedTasks = useGetCompletedDayTasksCount(date);
+  const notesCount = useGetNotesCount(date);
 
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 3, md: 5 } }}>
       <Stack spacing={4}>
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={2}
-          sx={{ alignItems: { sm: "center" }, justifyContent: "space-between" }}
-        >
-          <Typography
-            variant="h4"
-            component="h1"
-            sx={{ fontWeight: 700, letterSpacing: "-0.02em" }}
-          >
-            {Shared.formatDate(date)}
-          </Typography>
-
-          <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-            <Tooltip title="Previous day">
-              <IconButton
-                aria-label="Previous day"
-                onClick={() => goTo(shiftDate(date, -1))}
-              >
-                <ChevronLeftIcon />
-              </IconButton>
-            </Tooltip>
-            <Button variant="outlined" disabled={isToday} onClick={goToToday}>
-              Today
-            </Button>
-            <Tooltip title="Next day">
-              <IconButton
-                aria-label="Next day"
-                onClick={() => goTo(shiftDate(date, 1))}
-              >
-                <ChevronRightIcon />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        </Stack>
+        <DayHeader date={date} />
 
         <Box
           key={date}
@@ -140,20 +69,20 @@ export default function Day() {
             alignItems: "start",
           }}
         >
-          <Section title="Tasks">
+          <DaySection title="Tasks">
             <DayTasksCountCard
-              total={totalTaskCount.data ?? 0}
-              completed={completedTaskCount.data ?? 0}
+              total={totalTasks.data ?? 0}
+              completed={completedTasks.data ?? 0}
             />
             <AddDayTask date={date} />
             <DayTasks date={date} />
-          </Section>
+          </DaySection>
 
-          <Section title="Notes">
+          <DaySection title="Notes">
             <DayNotesCountCard count={notesCount.data ?? 0} />
             <AddDayNote date={date} />
             <DayNotes date={date} />
-          </Section>
+          </DaySection>
         </Box>
       </Stack>
     </Container>
