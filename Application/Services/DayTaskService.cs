@@ -71,10 +71,18 @@ public class DayTaskService : IDayTaskService
     }
     public async Task<Result<string>> DeleteDayTaskAsync(string taskId, CancellationToken ct)
     {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<string>.Failure("User not authenticated", 401);
+
         var entity = await _dayTaskRepository.GetByIdAsync(taskId, ct);
 
         if (entity is null)
             return Result<string>.Failure("Task not found", 404);
+
+        if (entity.UserId != currentUserId)
+            return Result<string>.Failure("Unauthorized to delete this", 401);
 
         try
         {
