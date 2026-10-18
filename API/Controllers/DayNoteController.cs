@@ -36,4 +36,10 @@ public class DayNoteController : BaseApiController
         var result = await _dayNoteService.UpdateDayNoteAsync(dto, ct);
         return HandleResult(result);
     }
+    [HttpGet("day-notes-count")]
+    public async Task<IActionResult> GetCurrentUserDayNotesCount(CancellationToken ct)
+    {
+        var result = await _dayNoteService.GetCurrentUserDayNotesCountAsync(ct);
+        return HandleResult(result);
+    }
 }
