@@ -1,10 +1,10 @@
-﻿using Application.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 [Authorize]
+[ConfirmedEmail]
 public class DayTaskController : BaseApiController
 {
     private IDayTaskService _dayTaskService;

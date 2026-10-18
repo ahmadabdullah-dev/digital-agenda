@@ -5,3 +5,4 @@ global using Application.Interfaces;
 global using API;
 global using Application;
 global using Infrastructure.Common;
+global using API.Attributes;

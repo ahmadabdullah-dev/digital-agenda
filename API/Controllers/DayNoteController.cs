@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [Authorize]
+[ConfirmedEmail]
+
 public class DayNoteController : BaseApiController
 {
     private readonly IDayNoteService _dayNoteService;
