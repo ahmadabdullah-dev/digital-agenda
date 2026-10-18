@@ -61,7 +61,7 @@ export const useGetAllDaysTasksCount = () =>
   useQuery<number>({
     queryKey: ["AllDaysTaskCount"],
     queryFn: () =>
-      agent.get<number>(`/DayTask/day-tasks-count`).then((res) => res.data),
+      agent.get<number>(`/DayTask/all-days-tasks-count`).then((res) => res.data),
     staleTime: 5 * 60 * 1000,
     retry: false,
   });
@@ -70,7 +70,7 @@ export const useGetAllCompletedDaysTasksCount = () =>
     queryKey: ["AllCompletedDaysTaskCount"],
     queryFn: () =>
       agent
-        .get<number>(`/DayTask/completed-day-tasks-count`)
+        .get<number>(`/DayTask/all-completed-days-tasks-count`)
         .then((res) => res.data),
     staleTime: 5 * 60 * 1000,
     retry: false,

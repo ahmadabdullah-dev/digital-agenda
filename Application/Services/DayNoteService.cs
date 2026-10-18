@@ -140,7 +140,7 @@ public class DayNoteService : IDayNoteService
         return Result<string>.Success("Note updated successfully");
 
     }
-    public async Task<Result<int>> GetCurrentUserDayNotesCountAsync(CancellationToken ct)
+    public async Task<Result<int>> GetCurrentUserAllDaysNotesCountAsync(CancellationToken ct)
     {
         var currentUserId = _userService.GetCurrentUserId();
 
@@ -151,7 +151,7 @@ public class DayNoteService : IDayNoteService
             
         try
         {
-            counts =  await _dayNoteRepository.GetUserDayNotesCountAsync(currentUserId, ct);
+            counts =  await _dayNoteRepository.GetUserAllDaysNotesCountAsync(currentUserId, ct);
             return Result<int>.Success(counts);
 
         }

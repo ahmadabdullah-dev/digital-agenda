@@ -138,7 +138,7 @@ public class DayTaskService : IDayTaskService
         }
         return Result<string>.Success("Task updated successfully");
     }
-    public async Task<Result<int>> GetCurrentUserDayTasksCountAsync(CancellationToken ct)
+    public async Task<Result<int>> GetCurrentUserAllDaysTasksCountAsync(CancellationToken ct)
     {
         var currentUserId = _userService.GetCurrentUserId();
 
@@ -149,7 +149,7 @@ public class DayTaskService : IDayTaskService
 
         try
         {
-            counts = await _dayTaskRepository.GetUserDayTasksCountAsync(currentUserId, ct);
+            counts = await _dayTaskRepository.GetUserAllDaysTasksCountAsync(currentUserId, ct);
             return Result<int>.Success(counts);
 
         }
@@ -173,7 +173,7 @@ public class DayTaskService : IDayTaskService
 
         try
         {
-            counts = await _dayTaskRepository.GetUserCompletedDayTasksCountAsync(currentUserId, ct);
+            counts = await _dayTaskRepository.GetUserAllCompletedDaysTasksCountAsync(currentUserId, ct);
             return Result<int>.Success(counts);
 
         }

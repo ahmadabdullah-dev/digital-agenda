@@ -58,9 +58,9 @@ export function useDeleteDayNote() {
 }
 export const useGetAllDaysNotesCount = () =>
   useQuery<number>({
-    queryKey: ["notescount"],
+    queryKey: ["AllDaysNotesCount"],
     queryFn: () =>
-      agent.get<number>(`/DayNote/day-notes-count`).then((res) => res.data),
+      agent.get<number>(`/DayNote/all-days-notes-count`).then((res) => res.data),
     staleTime: 5 * 60 * 1000,
     retry: false,
   });
