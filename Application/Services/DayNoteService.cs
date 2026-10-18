@@ -161,4 +161,25 @@ public class DayNoteService : IDayNoteService
         }
 
     }
+    public async Task<Result<int>> GetCurrentUserDayNotesCountAsync(DateOnly date, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<int>.Failure("User not authenticated", 401);
+
+        int counts = 0;
+
+        try
+        {
+            counts = await _dayNoteRepository.GetUserDayNotesCountAsync(currentUserId,date, ct);
+            return Result<int>.Success(counts);
+
+        }
+        catch
+        {
+            return Result<int>.Failure("Unexpected error happend while counting the day notes", 400);
+        }
+
+    }
 }

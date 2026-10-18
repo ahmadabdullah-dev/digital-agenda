@@ -11,5 +11,9 @@ public class DayNoteRepository : Repository<DayNote>, IDayNoteRepository
         var query = DbSet.AsNoTracking().Where(dn => dn.UserId == userId && dn.Date == date).OrderByDescending(x => x.Date).ThenBy(x => x.Id);
         return await PagedList<DayNote>.CreateAsync(query, p.Page, p.PageSize, ct);
     }
-    public async Task<int> GetUserAllDaysNotesCountAsync(string userId, CancellationToken ct) =>  await DbSet.CountAsync(x => x.UserId == userId, ct);
+    public async Task<int> GetUserAllDaysNotesCountAsync(string userId, CancellationToken ct)
+        => await DbSet.CountAsync(x => x.UserId == userId, ct);
+    public async Task<int> GetUserDayNotesCountAsync(string userId,DateOnly date, CancellationToken ct)
+        => await DbSet.CountAsync(x => x.UserId == userId && x.Date == date, ct);
+
 }

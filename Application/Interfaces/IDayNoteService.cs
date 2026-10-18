@@ -7,4 +7,6 @@ public interface IDayNoteService
     Task<Result<string>> DeleteDayNoteAsync(string noteId, CancellationToken ct);
     Task<Result<string>> UpdateDayNoteAsync(UpdateDayNoteDto dto, CancellationToken ct);
     Task<Result<int>> GetCurrentUserAllDaysNotesCountAsync(CancellationToken ct);
+    Task<Result<int>> GetCurrentUserDayNotesCountAsync(DateOnly date, CancellationToken ct);
+
 }
