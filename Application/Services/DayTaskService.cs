@@ -103,10 +103,17 @@ public class DayTaskService : IDayTaskService
     }
     public async Task<Result<string>> UpdateDayTaskAsync(UpdateDayTaskDto dto, CancellationToken ct)
     {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<string>.Failure("User not authenticated", 401);
         var entity = await _dayTaskRepository.GetByIdAsync(dto.Id);
 
         if (entity is null)
             return Result<string>.Failure("Task not found", 404);
+
+        if (entity.UserId != currentUserId)
+            return Result<string>.Failure("Unauthorized to update this", 401);
 
         if (dto.Title != null)
             entity.Title = dto.Title;
