@@ -12,9 +12,13 @@
 - EmailService
 - DataSeeder
 - RateLimiter(notification, auth)
+- Attributes(ConfirmedEmail)
 - Cors
 - AuthService(Login, Logout, Register, ConfirmEmail, ResendEmailConfirmationCode, ForgetPassword, UpdatePassword)
 - UserService(GetCurrentUser as Dto, UserId and Role, Update, Delete, UpdateEmail methods)
+- Applications(Full CRUD, Get In PagedList, Get Counts)
+- DayTasks(Full CRUD, Get In PagedList, Get Counts)
+- DayNotes(Full CRUD, Get In PagedList, Get Counts)
 
 
 ## Architechure(Layered On API)
