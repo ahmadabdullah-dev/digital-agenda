@@ -51,4 +51,41 @@ public class ApplicationService : IApplicationService
 
         return Result<string>.Success("Application added successfully");
     }
+    public async Task<Result<string>> UpdateApplicationOfCurrentUserAsync(UpdateApplicationDto dto, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (string.IsNullOrEmpty(currentUserId))
+            return Result<string>.Failure("User not authenticated", 401);
+
+        var entity = await _applicationRepository.GetByIdAsync(dto.ApplicationId, ct);
+
+        if (entity is null || entity.UserId != currentUserId)
+            return Result<string>.Failure("Application not found or may have been removed", 404);
+
+        if (dto.Title is not null) entity.Title = dto.Title;
+        if (dto.InstitutionName is not null) entity.InstitutionName = dto.InstitutionName;
+        if (dto.InstitutionLink is not null) entity.InstitutionLink = dto.InstitutionLink;
+        if (dto.Type is not null) entity.Type = dto.Type.Value;
+        if (dto.Status is not null) entity.Status = dto.Status.Value;
+        if (dto.AppliedDate is not null) entity.AppliedDate = dto.AppliedDate.Value;
+        if (dto.Deadline is not null) entity.Deadline = dto.Deadline;
+        if (dto.Notes is not null) entity.Notes = dto.Notes;
+
+        try
+        {
+            await _applicationRepository.SaveChangesAsync(ct);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while updating application {ApplicationId} for user {UserId}", dto.ApplicationId, currentUserId);
+            return Result<string>.Failure("An unexpected error occurred while updating the application", 500);
+        }
+
+        return Result<string>.Success("Application updated successfully");
+    }
 }

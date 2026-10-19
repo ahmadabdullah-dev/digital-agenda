@@ -18,4 +18,10 @@ public class AppliciationController : BaseApiController
         var result = await _applicationService.AddApplicationToCurrentUserAsync(dto, ct);
         return HandleResult(result);
     }
+    [HttpPut("application")]
+    public async Task<IActionResult> UpdateApplicationOfCurrentUser(UpdateApplicationDto dto, CancellationToken ct)
+    {
+        var result = await _applicationService.UpdateApplicationOfCurrentUserAsync(dto, ct);
+        return HandleResult(result);
+    }
 }
