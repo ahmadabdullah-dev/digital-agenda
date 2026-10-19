@@ -7,9 +7,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<DayNote> DayNotes => Set<DayNote>();
     public DbSet<DayTask> DayTasks => Set<DayTask>();
+    public DbSet<Application> Applications => Set<Application>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        
+        builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
         builder.Entity<AppUser>(entity =>
         {
