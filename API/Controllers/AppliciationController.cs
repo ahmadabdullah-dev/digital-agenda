@@ -30,5 +30,11 @@ public class AppliciationController : BaseApiController
         var result = await _applicationService.GetAllApplicationsOfCurrentUserAsync(p, ct);
         return HandleResult(result);
     }
+    [HttpDelete("application/{applicationId}")]
+    public async Task<IActionResult> DeleteApplicationOfCurrentUser([FromRoute] string applicationId, CancellationToken ct)
+    {
+        var result = await _applicationService.DeleteApplicationOfCurrentUserAsync(applicationId,ct);
+        return HandleResult(result);
+    }
 
 }

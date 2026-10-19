@@ -135,4 +135,32 @@ public class ApplicationService : IApplicationService
 
         return Result<PagedList<ApplicationDto>>.Success(dtos);
     }
+    public async Task<Result<string>> DeleteApplicationOfCurrentUserAsync(string applicationId, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (string.IsNullOrEmpty(currentUserId))
+            return Result<string>.Failure("User not authenticated", 401);
+
+        var entity = await _applicationRepository.GetByIdAsync(applicationId, ct);
+
+        if (entity is null || entity.UserId != currentUserId)
+            return Result<string>.Failure("Application not found or may have been removed", 404);
+
+        try
+        {
+             _applicationRepository.Remove(entity);
+             await _applicationRepository.SaveChangesAsync();
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex, "Error while deleting the application of user {UserId}", currentUserId);
+            return Result<string>.Failure("An unexpected error occurred while deleting the application", 500);
+        }
+        return Result<string>.Success("Application deleted successfully");
+    }
 }
