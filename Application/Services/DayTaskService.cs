@@ -121,6 +121,8 @@ public class DayTaskService : IDayTaskService
 
         if (dto.IsCompleted.HasValue)
             entity.IsCompleted = dto.IsCompleted.Value;
+       
+        entity.UpdatedAt = DateTime.UtcNow;
 
         try
         {

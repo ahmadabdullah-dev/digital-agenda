@@ -122,6 +122,8 @@ public class DayNoteService : IDayNoteService
 
         if (dto.Content != null)
             entity.Content = dto.Content;
+        
+        entity.UpdatedAt = DateTime.UtcNow;
 
         try
         {

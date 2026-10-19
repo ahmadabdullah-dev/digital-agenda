@@ -71,10 +71,13 @@ public class ApplicationService : IApplicationService
         if (dto.AppliedDate is not null) entity.AppliedDate = dto.AppliedDate.Value;
         if (dto.Deadline is not null) entity.Deadline = dto.Deadline;
         if (dto.Notes is not null) entity.Notes = dto.Notes;
+              
+        entity.UpdatedAt = DateTime.UtcNow;
 
         try
         {
-            await _applicationRepository.SaveChangesAsync(ct);
+           await _applicationRepository.SaveChangesAsync(ct);
+               
         }
         catch (OperationCanceledException)
         {
@@ -88,7 +91,6 @@ public class ApplicationService : IApplicationService
 
         return Result<string>.Success("Application updated successfully");
     }
-
     public async Task<Result<PagedList<ApplicationDto>>> GetAllApplicationsOfCurrentUserAsync(PaginationParams p, CancellationToken ct)
     {
         var currentUserId = _userService.GetCurrentUserId();
