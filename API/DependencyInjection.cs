@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.RateLimiting;
+using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 
 namespace API;
@@ -54,7 +55,9 @@ public static class DependencyInjection
 
             options.RejectionStatusCode = 429;
         });
-
+       
+        services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+        
         return services;
     }
 }

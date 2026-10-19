@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Infrastructure.Repositories;
+using Microsoft.Extensions.Logging;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.Services;
 
@@ -8,7 +10,7 @@ public class ApplicationService : IApplicationService
     private readonly IUserService _userService;
     private readonly ILogger<ApplicationService> _logger;
     public ApplicationService(IApplicationRepository applicationRepository
-        ,IUserService userService,
+        , IUserService userService,
         ILogger<ApplicationService> logger)
     {
         _applicationRepository = applicationRepository;
@@ -18,16 +20,16 @@ public class ApplicationService : IApplicationService
     public async Task<Result<string>> AddApplicationToCurrentUserAsync(AddApplicationDto dto, CancellationToken ct)
     {
         var currentUserId = _userService.GetCurrentUserId();
-       
+
         if (string.IsNullOrEmpty(currentUserId))
             return Result<string>.Failure("User not authenticated", 401);
 
         var application = new Domain.Application
-        {          
+        {
             Title = dto.Title,
             InstitutionName = dto.InstitutionName,
             InstitutionLink = dto.InstitutionLink,
-            AppliedDate = dto.AppliedDate,  
+            AppliedDate = dto.AppliedDate,
             Deadline = dto.Deadline,
             Status = dto.Status,
             Type = dto.Type,
@@ -43,7 +45,7 @@ public class ApplicationService : IApplicationService
         {
             throw;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.LogError($"Error happened while adding application for user with {currentUserId} Error Message is {ex.Message}");
             return Result<string>.Failure("Unexpected error happened while adding the application", 400);
@@ -71,13 +73,13 @@ public class ApplicationService : IApplicationService
         if (dto.AppliedDate is not null) entity.AppliedDate = dto.AppliedDate.Value;
         if (dto.Deadline is not null) entity.Deadline = dto.Deadline;
         if (dto.Notes is not null) entity.Notes = dto.Notes;
-              
+
         entity.UpdatedAt = DateTime.UtcNow;
 
         try
         {
-           await _applicationRepository.SaveChangesAsync(ct);
-               
+            await _applicationRepository.SaveChangesAsync(ct);
+
         }
         catch (OperationCanceledException)
         {
@@ -149,18 +151,41 @@ public class ApplicationService : IApplicationService
 
         try
         {
-             _applicationRepository.Remove(entity);
-             await _applicationRepository.SaveChangesAsync();
+            _applicationRepository.Remove(entity);
+            await _applicationRepository.SaveChangesAsync();
         }
         catch (OperationCanceledException)
         {
             throw;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Error while deleting the application of user {UserId}", currentUserId);
             return Result<string>.Failure("An unexpected error occurred while deleting the application", 500);
         }
         return Result<string>.Success("Application deleted successfully");
+    }
+    public async Task<Result<Dictionary<ApplicationType, Dictionary<ApplicationStatus, int>>>> GetCurrentUserApplicationsStatusCountsByTypeAsync(CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (string.IsNullOrEmpty(currentUserId))
+            return Result<Dictionary<ApplicationType, Dictionary<ApplicationStatus, int>>>.Failure("User not authenticated", 401);
+
+        try
+        {
+            var counts = await _applicationRepository.GetUserApplicationsStatusCountsByTypeAsync(currentUserId, ct);
+
+            return Result<Dictionary<ApplicationType, Dictionary<ApplicationStatus, int>>>.Success(counts);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting status counts by type for user {UserId}", currentUserId);
+            return Result<Dictionary<ApplicationType, Dictionary<ApplicationStatus, int>>>.Failure("An unexpected error occurred while getting the statistics", 500);
+        }
     }
 }

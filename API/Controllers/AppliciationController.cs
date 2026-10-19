@@ -36,5 +36,11 @@ public class AppliciationController : BaseApiController
         var result = await _applicationService.DeleteApplicationOfCurrentUserAsync(applicationId,ct);
         return HandleResult(result);
     }
+    [HttpGet("application-counts")]
+    public async Task<IActionResult> GetCurrentUserApplicationsStatusCountsByType(CancellationToken ct)
+    {
+        var result = await _applicationService.GetCurrentUserApplicationsStatusCountsByTypeAsync(ct);
+        return HandleResult(result);
+    }
 
 }
