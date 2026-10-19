@@ -88,4 +88,49 @@ public class ApplicationService : IApplicationService
 
         return Result<string>.Success("Application updated successfully");
     }
+
+    public async Task<Result<PagedList<ApplicationDto>>> GetAllApplicationsOfCurrentUserAsync(PaginationParams p, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (string.IsNullOrEmpty(currentUserId))
+            return Result<PagedList<ApplicationDto>>.Failure("User not authenticated", 401);
+
+        PagedList<Domain.Application> applications;
+
+        try
+        {
+            applications = await _applicationRepository.GetAllApplicationsOfUserAsync(currentUserId, p, ct);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while getting applications of user {UserId}", currentUserId);
+            return Result<PagedList<ApplicationDto>>.Failure("An unexpected error occurred while getting the applications", 500);
+        }
+
+        var dtos = new PagedList<ApplicationDto>
+        {
+            Items = applications.Items.Select(x => new ApplicationDto
+            {
+                Id = x.Id,
+                Title = x.Title,
+                InstitutionName = x.InstitutionName,
+                InstitutionLink = x.InstitutionLink,
+                Type = x.Type,
+                Status = x.Status,
+                AppliedDate = x.AppliedDate,
+                Deadline = x.Deadline,
+                Notes = x.Notes
+            }).ToList(),
+            CurrentPage = applications.CurrentPage,
+            TotalCount = applications.TotalCount,
+            TotalPages = applications.TotalPages
+        };
+
+        return Result<PagedList<ApplicationDto>>.Success(dtos);
+    }
 }

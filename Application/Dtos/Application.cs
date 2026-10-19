@@ -42,3 +42,16 @@ public record UpdateApplicationDto
     [MaxLength(4000)]
     public string? Notes { get; init; }
 }
+
+public class ApplicationDto
+{
+    public string Id { get; set; } = default!;
+    public string Title { get; set; } = default!;
+    public string? InstitutionName { get; set; }
+    public string? InstitutionLink { get; set; }
+    public ApplicationType Type { get; set; }
+    public ApplicationStatus Status { get; set; }
+    public DateOnly AppliedDate { get; set; }
+    public DateOnly? Deadline { get; set; }
+    public string? Notes { get; set; }
+}

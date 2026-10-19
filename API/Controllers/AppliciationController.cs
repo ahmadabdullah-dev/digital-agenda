@@ -24,4 +24,11 @@ public class AppliciationController : BaseApiController
         var result = await _applicationService.UpdateApplicationOfCurrentUserAsync(dto, ct);
         return HandleResult(result);
     }
+    [HttpGet("all-applications")]
+    public async Task<IActionResult> GetAllApplicationsOfCurrentUser([FromQuery] PaginationParams p, CancellationToken ct)
+    {
+        var result = await _applicationService.GetAllApplicationsOfCurrentUserAsync(p, ct);
+        return HandleResult(result);
+    }
+
 }
