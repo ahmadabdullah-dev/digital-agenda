@@ -15,6 +15,7 @@ import Day from "../../features/day/Day";
 import UserSettings from "../../features/user/UserSettings";
 import MonthlyCalendar from "../../features/calendar/MonthlyCalendar";
 import LandingPage from "../LandingPage";
+import ApplicationsList from "../../features/application/ApplicationsList";
 
 export const routes = createBrowserRouter([
   {
@@ -22,7 +23,7 @@ export const routes = createBrowserRouter([
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <LandingPage/> },
+      { index: true, element: <LandingPage /> },
       {
         element: <RequireAuth />,
         children: [
@@ -34,6 +35,7 @@ export const routes = createBrowserRouter([
               { path: "day/:date", element: <Day /> },
               { path: "user/settings", element: <UserSettings /> },
               { path: "calendar", element: <MonthlyCalendar /> },
+              { path: "applications", element: <ApplicationsList /> },
             ],
           },
           { path: "/confirm-email", element: <ConfirmEmailForm /> },
