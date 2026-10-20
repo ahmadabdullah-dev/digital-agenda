@@ -1,14 +1,29 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import agent from "../api/agent";
-import type { ApplicationDto } from "../types/application";
+import type { AddApplicationDto, ApplicationDto } from "../types/application";
 import type { PaginatedList, PaginationParams } from "../types/common";
 
 export const useGetAllApplications = (pagination: PaginationParams) =>
   useQuery<PaginatedList<ApplicationDto>>({
     queryKey: ["applications", pagination],
     queryFn: () =>
-      agent.get<PaginatedList<ApplicationDto>>("/Application/all-applications", {params: pagination})
+      agent
+        .get<
+          PaginatedList<ApplicationDto>
+        >("/Application/all-applications", { params: pagination })
         .then((res) => res.data),
     staleTime: 5 * 60 * 1000,
     retry: false,
   });
+export function useAddApplication() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (dto: AddApplicationDto) =>
+      agent
+        .post<string>("/Application/application", dto)
+        .then((res) => res.data),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["applications"] }),
+  });
+}
