@@ -5,10 +5,10 @@ namespace API.Controllers;
 
 [Authorize]
 [ConfirmedEmail]
-public class AppliciationController : BaseApiController
+public class ApplicationController : BaseApiController
 {
     private readonly IApplicationService _applicationService;
-    public AppliciationController(IApplicationService applicationService)
+    public ApplicationController(IApplicationService applicationService)
     {
         _applicationService = applicationService;
     }
