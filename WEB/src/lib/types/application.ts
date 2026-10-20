@@ -21,7 +21,13 @@ export interface AddApplicationDto {
   notes?: string | null;
 }
 
-export const TYPES = ["Job", "University", "Scholarship", "Internship", "Other"];
+export const TYPES = [
+  "Job",
+  "University",
+  "Scholarship",
+  "Internship",
+  "Other",
+];
 export const STATUSES = [
   "Applied",
   "Under Review",
@@ -30,3 +36,15 @@ export const STATUSES = [
   "Rejected",
   "Withdrawn",
 ];
+
+export interface UpdateApplicationDto {
+   applicationId: string;
+   title?: string;
+   institutionName?: string;
+   institutionLink?: string;
+   type?: number;
+   status?: number;
+   appliedDate?: string;
+   deadline?: string;
+   notes?: string;
+}
