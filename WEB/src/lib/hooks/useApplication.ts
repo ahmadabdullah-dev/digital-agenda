@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import agent from "../api/agent";
-import type { AddApplicationDto, ApplicationDto, UpdateApplicationDto } from "../types/application";
+import type {
+  AddApplicationDto,
+  ApplicationDto,
+  UpdateApplicationDto,
+} from "../types/application";
 import type { PaginatedList, PaginationParams } from "../types/common";
 
 export const useGetAllApplications = (pagination: PaginationParams) =>
@@ -32,7 +36,20 @@ export function useUpdateApplication() {
 
   return useMutation({
     mutationFn: (dto: UpdateApplicationDto) =>
-      agent.put<string>("/Application/application", dto).then((res) => res.data),
+      agent
+        .put<string>("/Application/application", dto)
+        .then((res) => res.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
+    },
+  });
+}
+export function useDeleteApplication() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) =>
+      agent.delete<string>(`/Application/application/${id}`).then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications"] });
     },

@@ -13,10 +13,11 @@ import {
   Typography,
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
 import type { PaginationParams } from "../../lib/types/common";
 import { Shared } from "../../lib/shared";
 import UpdateApplicationDialog from "./UpdateApplicationDialog";
-import { useGetAllApplications } from "../../lib/hooks/useApplication";
+import { useDeleteApplication, useGetAllApplications } from "../../lib/hooks/useApplication";
 import type { UpdateApplicationDto } from "../../lib/types/application";
 
 type ChipColor = "default" | "info" | "warning" | "success" | "error";
@@ -46,6 +47,7 @@ export default function ApplicationsList() {
   );
 
   const { data, isPending, isError, error } = useGetAllApplications(pagination);
+  const { mutate: deleteApplication, isPending: isDeleting } = useDeleteApplication();
 
   if (isPending) {
     return (
@@ -87,7 +89,11 @@ export default function ApplicationsList() {
                 >
                   {a.title}
                 </Typography>
-                <Stack direction="row" spacing={1} sx={{alignItems: "center"}}>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{ alignItems: "center" }}
+                >
                   <Chip
                     label={a.status}
                     size="small"
@@ -114,6 +120,21 @@ export default function ApplicationsList() {
                         }
                       >
                         <EditOutlinedIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton
+                        size="small"
+                        color="error"
+                        aria-label="Delete Application"
+                        disabled={isDeleting}
+                        onClick={() => {
+                          if (window.confirm("Delete this application?")) {
+                            deleteApplication(a.id);
+                          }
+                        }}
+                      >
+                        <DeleteOutlineIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
                   </Box>
