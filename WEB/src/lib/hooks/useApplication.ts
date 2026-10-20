@@ -49,9 +49,23 @@ export function useDeleteApplication() {
 
   return useMutation({
     mutationFn: (id: string) =>
-      agent.delete<string>(`/Application/application/${id}`).then((res) => res.data),
+      agent
+        .delete<string>(`/Application/application/${id}`)
+        .then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications"] });
     },
   });
 }
+
+
+export const useApplicationStats = () => {
+  return useQuery({
+    queryKey: ["application-counts"],
+    queryFn: async () => {
+      const response = await agent.get<Record<string, Record<string, number>>>("/application/application-counts",
+      );
+      return response.data;
+    },
+  });
+};
