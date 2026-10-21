@@ -31,4 +31,10 @@ public class GoalController: BaseApiController
         var result = await _goalService.UpdateCurrentUserGoalAsync(dto, ct);
         return HandleResult(result);
     }
+    [HttpDelete("goal/{goalId}")]
+    public async Task<IActionResult> DeleteCurrentUserGoal([FromRoute] string goalId, CancellationToken ct)
+    {
+        var result = await _goalService.DeleteCurrentUserGoalAsync(goalId, ct);
+        return HandleResult(result);
+    }
 }

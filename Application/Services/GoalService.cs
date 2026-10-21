@@ -115,4 +115,37 @@ public class GoalService : IGoalService
         }
         return Result<string>.Success("Task updated successfully");
     }
+    public async Task<Result<string>> DeleteCurrentUserGoalAsync(string goalId, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<string>.Failure("User not authenticated", 401);
+
+        var entity = await _goalRepository.GetByIdAsync(goalId, ct);
+
+        if (entity is null)
+            return Result<string>.Failure("Goal not found", 404);
+
+        if (entity.UserId != currentUserId)
+            return Result<string>.Failure("Unauthorized to delete this", 401);
+
+        try
+        {
+            _goalRepository.Remove(entity);
+            await _goalRepository.SaveChangesAsync(ct);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while removing goal {GoalId}", goalId);
+            return Result<string>.Failure("Failed to delete goal", 500);
+        }
+
+        return Result<string>.Success("Goal deleted successfully");
+    }
+
 }
