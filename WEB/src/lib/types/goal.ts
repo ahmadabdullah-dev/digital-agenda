@@ -3,5 +3,9 @@ export interface GoalDto {
   title: string;
   isCompleted: boolean;
   period: string;
-  createdAt: string; 
+  createdAt: string;
+}
+export interface AddGoalDto {
+  title: string;
+  period: string;
 }

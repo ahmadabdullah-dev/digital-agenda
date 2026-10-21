@@ -1,11 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { PaginatedList, PaginationParams } from "../types/common";
-import type { GoalDto } from "../types/goal";
+import type { AddGoalDto, GoalDto } from "../types/goal";
 import agent from "../api/agent";
 
 export const useGetAllCurrentUserGoals = (pagination: PaginationParams) =>
   useQuery<PaginatedList<GoalDto>>({
-    queryKey: ["goals", pagination],
+    queryKey: ["CurrentUsergoals", pagination],
     queryFn: () =>
       agent
         .get<
@@ -32,3 +32,17 @@ export const useGetCurrentUserGoalsCount = () =>
     staleTime: 5 * 60 * 1000,
     retry: false,
   });
+
+  export function useAddGoalToCurrentUSer() {
+    const queryClient = useQueryClient();
+  
+    return useMutation({
+      mutationFn: (dto: AddGoalDto) =>
+        agent.post<string>("/Goal/goal", dto).then((res) => res.data),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["CurrentUserGoalsCount"] });
+        queryClient.invalidateQueries({ queryKey: ["CurrentUserCompletedGoalsCount"] });
+        queryClient.invalidateQueries({ queryKey: ["CurrentUsergoals"] });
+      },
+    });
+  };
