@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Stack, TextField } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import type { AddGoalDto } from "../../lib/types/goal";
 import { useAddGoalToCurrentUSer } from "../../lib/hooks/useGoal";
 
@@ -11,16 +11,13 @@ export default function AddGoal() {
   const { mutate, isPending, isSuccess, isError, data, error } =
     useAddGoalToCurrentUSer();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<AddGoalDto>({ defaultValues: emptyForm });
+  const { control, handleSubmit, reset } = useForm<AddGoalDto>({
+    defaultValues: emptyForm,
+  });
 
   const onSubmit = (values: AddGoalDto) => {
     mutate(
-      { ...values },
+      { title: values.title.trim(), period: values.period.trim() },
       {
         onSuccess: () => {
           reset(emptyForm);
@@ -43,27 +40,43 @@ export default function AddGoal() {
       sx={{ width: "100%", mx: "auto", p: { xs: 1, sm: 2 } }}
     >
       <Stack spacing={2.5}>
-        <TextField
-          label="Title"
-          fullWidth
-          {...register("title", {
+        <Controller
+          name="title"
+          control={control}
+          rules={{
             required: "Title is required",
+            validate: (v) => v.trim().length > 0 || "Title is required",
             maxLength: { value: 200, message: "Max 200 characters" },
-          })}
-          error={!!errors.title}
-          helperText={errors.title?.message}
+          }}
+          render={({ field, fieldState }) => (
+            <TextField
+              {...field}
+              label="Title"
+              fullWidth
+              error={!!fieldState.error}
+              helperText={fieldState.error?.message}
+            />
+          )}
         />
 
-        <TextField
-          label="Period"
-          placeholder="e.g. this month, 2026, 10 years"
-          fullWidth
-          {...register("period", {
+        <Controller
+          name="period"
+          control={control}
+          rules={{
             required: "Period is required",
+            validate: (v) => v.trim().length > 0 || "Period is required",
             maxLength: { value: 50, message: "Max 50 characters" },
-          })}
-          error={!!errors.period}
-          helperText={errors.period?.message}
+          }}
+          render={({ field, fieldState }) => (
+            <TextField
+              {...field}
+              label="Period"
+              placeholder="e.g. this month, 2026, 10 years"
+              fullWidth
+              error={!!fieldState.error}
+              helperText={fieldState.error?.message}
+            />
+          )}
         />
 
         <Button
