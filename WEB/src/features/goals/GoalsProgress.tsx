@@ -67,7 +67,8 @@ export default function GoalsProgress() {
     <Paper
       variant="outlined"
       sx={{
-        p: { xs: 2.5, sm: 3 },
+        p:2,
+        m:2,
         borderRadius: 2,
         borderLeft: "4px solid",
         borderLeftColor: isAllDone ? "success.main" : "primary.main",

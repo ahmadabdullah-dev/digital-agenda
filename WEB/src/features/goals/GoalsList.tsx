@@ -16,12 +16,15 @@ import {
   Typography,
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
-import { useDeleteCurrentUserGoal, useGetAllCurrentUserGoals } from "../../lib/hooks/useGoal";
+import {
+  useDeleteCurrentUserGoal,
+  useGetAllCurrentUserGoals,
+} from "../../lib/hooks/useGoal";
 import type { PaginationParams } from "../../lib/types/common";
 import type { GoalDto } from "../../lib/types/goal";
 import UpdateGoalDialog from "./UpdateGoalDialog";
-import { DeleteOutlineOutlined } from "@mui/icons-material";
 
 export default function GoalsList() {
   const [pagination, setPagination] = useState<PaginationParams>({
@@ -29,7 +32,8 @@ export default function GoalsList() {
     pageSize: 12,
   });
   const [editingGoal, setEditingGoal] = useState<GoalDto | null>(null);
-  const { mutate: deleteGoal, isPending: isDeleting } = useDeleteCurrentUserGoal();
+  const { mutate: deleteGoal, isPending: isDeleting } =
+    useDeleteCurrentUserGoal();
 
   const { data, isPending, isError, error } =
     useGetAllCurrentUserGoals(pagination);
@@ -67,7 +71,18 @@ export default function GoalsList() {
   }
 
   return (
-    <Stack spacing={{ xs: 2, sm: 3 }}>
+    <Stack sx={{p: 2}} spacing={{ xs: 2, sm: 3 }}>
+      <Typography
+        component="h2"
+        sx={{
+          fontWeight: 700,
+          fontSize: { xs: "1.25rem", sm: "1.5rem" },
+          lineHeight: 1.3,
+        }}
+      >
+        My goals
+      </Typography>
+
       <Paper variant="outlined" sx={{ overflow: "hidden", borderRadius: 2 }}>
         <List disablePadding>
           {data.items.map((goal, index) => (
@@ -76,40 +91,41 @@ export default function GoalsList() {
               disablePadding
               divider={index < data.items.length - 1}
               secondaryAction={
-                <Box>
-                      <Tooltip title="Edit">
-                  <IconButton
-                    edge="end"
-                    size="small"
-                    aria-label="Edit goal"
-                    onClick={() => setEditingGoal(goal)}
-                  >
-                    <EditOutlinedIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                    <Tooltip title="Delete">
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                  <Tooltip title="Edit">
                     <IconButton
+                      size="small"
+                      aria-label="Edit goal"
+                      onClick={() => setEditingGoal(goal)}
+                    >
+                      <EditOutlinedIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete">
+                    <span>
+                      <IconButton
                         size="small"
                         color="error"
                         aria-label="Delete goal"
                         disabled={isDeleting}
-                            onClick={() => {
-                        if (window.confirm("Delete this goal?")) {
-                        deleteGoal(goal.id);
-                            }
-                        }}>
-                    <DeleteOutlineOutlined fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
+                        onClick={() => {
+                          if (window.confirm("Delete this goal?")) {
+                            deleteGoal(goal.id);
+                          }
+                        }}
+                      >
+                        <DeleteOutlineOutlinedIcon fontSize="small" />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
                 </Box>
-              
               }
               sx={{ "& .MuiListItemSecondaryAction-root": { right: 16 } }}
             >
               <ListItemButton
                 sx={{
                   pl: { xs: 2, sm: 3 },
-                  pr: 7,
+                  pr: 12,
                   py: { xs: 1.5, sm: 2 },
                   borderLeft: "4px solid",
                   borderLeftColor: goal.isCompleted
