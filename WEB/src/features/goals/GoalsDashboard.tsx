@@ -7,9 +7,9 @@ import AddGoal from "./AddGoal";
 export default function GoalsDashboard() {
   return (
     <Stack spacing={{ xs: 2, sm: 3 }}>
-      <GoalsProgress />
       <GoalsList />
-      <AddGoal/>
+      <AddGoal/>  
+      <GoalsProgress />
     </Stack>
   );
 }

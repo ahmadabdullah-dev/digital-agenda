@@ -16,6 +16,7 @@ import UserSettings from "../../features/user/UserSettings";
 import MonthlyCalendar from "../../features/calendar/MonthlyCalendar";
 import LandingPage from "../LandingPage";
 import ApplicationsDashboard from "../../features/application/ApplicationsDashboard";
+import GoalsDashboard from "../../features/goals/GoalsDashboard";
 
 export const routes = createBrowserRouter([
   {
@@ -36,6 +37,7 @@ export const routes = createBrowserRouter([
               { path: "user/settings", element: <UserSettings /> },
               { path: "calendar", element: <MonthlyCalendar /> },
               { path: "applications", element: <ApplicationsDashboard /> },
+              { path: "goals", element: <GoalsDashboard /> },
             ],
           },
           { path: "/confirm-email", element: <ConfirmEmailForm /> },
