@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import {
   Alert,
   Box,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
@@ -11,17 +12,22 @@ import {
   Paper,
   Skeleton,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
 import { useGetAllCurrentUserGoals } from "../../lib/hooks/useGoal";
 import type { PaginationParams } from "../../lib/types/common";
+import type { GoalDto } from "../../lib/types/goal";
+import UpdateGoalDialog from "./UpdateGoalDialog";
 
 export default function GoalsList() {
   const [pagination, setPagination] = useState<PaginationParams>({
     page: 1,
     pageSize: 12,
   });
+  const [editingGoal, setEditingGoal] = useState<GoalDto | null>(null);
 
   const { data, isPending, isError, error } =
     useGetAllCurrentUserGoals(pagination);
@@ -67,10 +73,24 @@ export default function GoalsList() {
               key={goal.id}
               disablePadding
               divider={index < data.items.length - 1}
+              secondaryAction={
+                <Tooltip title="Edit">
+                  <IconButton
+                    edge="end"
+                    size="small"
+                    aria-label="Edit goal"
+                    onClick={() => setEditingGoal(goal)}
+                  >
+                    <EditOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              }
+              sx={{ "& .MuiListItemSecondaryAction-root": { right: 16 } }}
             >
               <ListItemButton
                 sx={{
-                  px: { xs: 2, sm: 3 },
+                  pl: { xs: 2, sm: 3 },
+                  pr: 7,
                   py: { xs: 1.5, sm: 2 },
                   borderLeft: "4px solid",
                   borderLeftColor: goal.isCompleted
@@ -177,6 +197,14 @@ export default function GoalsList() {
             siblingCount={0}
           />
         </Box>
+      )}
+
+      {editingGoal && (
+        <UpdateGoalDialog
+          key={editingGoal.id}
+          goal={editingGoal}
+          onClose={() => setEditingGoal(null)}
+        />
       )}
     </Stack>
   );

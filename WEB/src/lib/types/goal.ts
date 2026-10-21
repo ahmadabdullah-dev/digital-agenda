@@ -9,3 +9,9 @@ export interface AddGoalDto {
   title: string;
   period: string;
 }
+export interface UpdateCurrentUserGoalDto {
+  id: string;
+  title?: string;
+  isCompleted?: boolean;
+  period?: string;
+}
