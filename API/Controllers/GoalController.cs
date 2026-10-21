@@ -37,4 +37,16 @@ public class GoalController: BaseApiController
         var result = await _goalService.DeleteCurrentUserGoalAsync(goalId, ct);
         return HandleResult(result);
     }
+    [HttpGet("completed-goals-count")]
+    public async Task<IActionResult> GetCurrentUserCompletedGoalsCount(CancellationToken ct)
+    {
+        var result = await _goalService.GetCurrentUserCompletedGoalsCountAsync(ct);
+        return HandleResult(result);
+    }
+    [HttpGet("goals-count")]
+    public async Task<IActionResult> GetCurrentUserGoalsCount(CancellationToken ct)
+    {
+        var result = await _goalService.GetCurrentUserGoalsCountAsync(ct);
+        return HandleResult(result);
+    }
 }

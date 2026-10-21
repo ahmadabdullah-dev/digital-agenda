@@ -147,5 +147,47 @@ public class GoalService : IGoalService
 
         return Result<string>.Success("Goal deleted successfully");
     }
+    public async Task<Result<int>> GetCurrentUserGoalsCountAsync(CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<int>.Failure("User not authenticated", 401);
+
+        int counts = 0;
+
+        try
+        {
+            counts = await _goalRepository.GetUserGoalsCountAsync(currentUserId, ct);
+            return Result<int>.Success(counts);
+
+        }
+        catch
+        {
+            return Result<int>.Failure("Unexpected error happend while counting the goals", 400);
+        }
+
+    }
+    public async Task<Result<int>> GetCurrentUserCompletedGoalsCountAsync(CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<int>.Failure("User not authenticated", 401);
+
+        int counts = 0;
+
+        try
+        {
+            counts = await _goalRepository.GetUserCompletedGoalsCountAsync(currentUserId, ct);
+            return Result<int>.Success(counts);
+
+        }
+        catch
+        {
+            return Result<int>.Failure("Unexpected error happend while counting the completed goals", 400);
+        }
+
+    }
 
 }

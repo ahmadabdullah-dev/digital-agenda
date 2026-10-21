@@ -5,7 +5,7 @@ public interface IGoalService
     Task<Result<string>> AddGoalToCurrentUserAsync(AddGoalDto dto, CancellationToken ct);
     Task<Result<string>> UpdateCurrentUserGoalAsync(UpdateCurrentUserGoalDto dto, CancellationToken ct);
     Task<Result<string>> DeleteCurrentUserGoalAsync(string goalId, CancellationToken ct);
-
-
+    Task<Result<int>> GetCurrentUserCompletedGoalsCountAsync(CancellationToken ct);
+    Task<Result<int>> GetCurrentUserGoalsCountAsync(CancellationToken ct);
 
 }
