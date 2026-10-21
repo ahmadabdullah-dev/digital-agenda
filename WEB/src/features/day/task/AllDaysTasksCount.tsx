@@ -26,7 +26,6 @@ export default function AllDaysTasksCount() {
         display: "flex",
         alignItems: "center",
         gap: 2,
-        width: "fit-content",
         maxWidth: "100%",
       }}
     >
