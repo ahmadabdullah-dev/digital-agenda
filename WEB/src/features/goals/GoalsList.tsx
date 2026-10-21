@@ -17,10 +17,11 @@ import {
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
-import { useGetAllCurrentUserGoals } from "../../lib/hooks/useGoal";
+import { useDeleteCurrentUserGoal, useGetAllCurrentUserGoals } from "../../lib/hooks/useGoal";
 import type { PaginationParams } from "../../lib/types/common";
 import type { GoalDto } from "../../lib/types/goal";
 import UpdateGoalDialog from "./UpdateGoalDialog";
+import { DeleteOutlineOutlined } from "@mui/icons-material";
 
 export default function GoalsList() {
   const [pagination, setPagination] = useState<PaginationParams>({
@@ -28,6 +29,7 @@ export default function GoalsList() {
     pageSize: 12,
   });
   const [editingGoal, setEditingGoal] = useState<GoalDto | null>(null);
+  const { mutate: deleteGoal, isPending: isDeleting } = useDeleteCurrentUserGoal();
 
   const { data, isPending, isError, error } =
     useGetAllCurrentUserGoals(pagination);
@@ -74,7 +76,8 @@ export default function GoalsList() {
               disablePadding
               divider={index < data.items.length - 1}
               secondaryAction={
-                <Tooltip title="Edit">
+                <Box>
+                      <Tooltip title="Edit">
                   <IconButton
                     edge="end"
                     size="small"
@@ -84,6 +87,22 @@ export default function GoalsList() {
                     <EditOutlinedIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
+                    <Tooltip title="Delete">
+                    <IconButton
+                        size="small"
+                        color="error"
+                        aria-label="Delete goal"
+                        disabled={isDeleting}
+                            onClick={() => {
+                        if (window.confirm("Delete this goal?")) {
+                        deleteGoal(goal.id);
+                            }
+                        }}>
+                    <DeleteOutlineOutlined fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
+                </Box>
+              
               }
               sx={{ "& .MuiListItemSecondaryAction-root": { right: 16 } }}
             >
