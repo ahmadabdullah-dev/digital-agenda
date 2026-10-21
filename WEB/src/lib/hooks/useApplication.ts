@@ -27,8 +27,10 @@ export function useAddApplication() {
       agent
         .post<string>("/Application/application", dto)
         .then((res) => res.data),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["applications"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
+      queryClient.invalidateQueries({ queryKey: ["application-counts"] });
+    },
   });
 }
 export function useUpdateApplication() {
@@ -41,6 +43,8 @@ export function useUpdateApplication() {
         .then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications"] });
+      queryClient.invalidateQueries({ queryKey: ["application-counts"] });
+
     },
   });
 }
@@ -54,6 +58,8 @@ export function useDeleteApplication() {
         .then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications"] });
+      queryClient.invalidateQueries({ queryKey: ["application-counts"] });
+
     },
   });
 }
