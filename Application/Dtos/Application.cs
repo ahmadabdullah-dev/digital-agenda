@@ -10,7 +10,7 @@ public record AddApplicationDto
     [MaxLength(200)]
     public string? InstitutionName { get; init; }
 
-    [MaxLength(2000), Url]
+    [MaxLength(2000)]
     public string? InstitutionLink { get; init; }
 
     public ApplicationType Type { get; init; }
@@ -31,7 +31,7 @@ public record UpdateApplicationDto
     [MaxLength(200)]
     public string? InstitutionName { get; init; }
 
-    [MaxLength(2000), Url]
+    [MaxLength(2000)]
     public string? InstitutionLink { get; init; }
 
     public ApplicationType? Type { get; init; }
