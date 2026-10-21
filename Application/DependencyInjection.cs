@@ -14,6 +14,7 @@ public static class DependencyInjection
         services.AddScoped<IDayNoteService, DayNoteService>();
         services.AddScoped<IDayTaskService, DayTaskService>();
         services.AddScoped<IApplicationService, ApplicationService>();
+        services.AddScoped<IGoalService, GoalService>();
 
         services.Configure<EmailConfiguration>(configuration.GetSection("EmailConfiguration"));
         services.Configure<CloudinaryConfigurations>(configuration.GetSection("CloudinaryConfigurations"));

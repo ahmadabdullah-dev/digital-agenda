@@ -37,6 +37,7 @@ namespace Infrastructure
             services.AddScoped<IDayNoteRepository, DayNoteRepository>();
             services.AddScoped<IDayTaskRepository, DayTaskRepository>();
             services.AddScoped<IApplicationRepository, ApplicationRepository>();
+            services.AddScoped<IGoalRepository, GoalRepository>();
 
             services.AddDataProtection();
 
