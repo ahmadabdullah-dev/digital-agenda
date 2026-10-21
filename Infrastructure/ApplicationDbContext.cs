@@ -8,6 +8,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<DayNote> DayNotes => Set<DayNote>();
     public DbSet<DayTask> DayTasks => Set<DayTask>();
     public DbSet<Application> Applications => Set<Application>();
+    public DbSet<Goal> Goals => Set<Goal>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
