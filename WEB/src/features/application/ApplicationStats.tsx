@@ -77,6 +77,8 @@ function StatCard({
     >
       <CardContent
         sx={{
+          display: "flex",
+          flexDirection: "column", // stack sections vertically
           p: { xs: 2, sm: 2.5 },
           "&:last-child": { pb: { xs: 2, sm: 2.5 } },
         }}
@@ -88,13 +90,13 @@ function StatCard({
           sx={{
             mb: 2,
             justifyContent: "space-between",
-            alignItems: "flex-end",
+            alignItems: "flex-start", // was flex-end; keeps title aligned to top of the big number
           }}
         >
           <Typography
             variant="subtitle1"
             noWrap
-            sx={{ fontWeight: 600, minWidth: 0 }}
+            sx={{ fontWeight: 600, minWidth: 0, flex: 1 }} // flex: 1 so noWrap ellipsis actually works
             title={type}
           >
             {type}
@@ -122,12 +124,14 @@ function StatCard({
           aria-label={`${type} status distribution`}
           sx={{
             display: "flex",
+            width: "100%",
             height: 8,
             borderRadius: 4,
             overflow: "hidden",
             gap: "2px",
             bgcolor: "action.hover",
             mb: 2.5,
+            flexShrink: 0,
           }}
         >
           {entries
@@ -138,6 +142,7 @@ function StatCard({
                   sx={{
                     flexGrow: n,
                     flexBasis: 0,
+                    minWidth: 4, // keeps tiny segments visible
                     bgcolor: resolveColor(theme, statusPalette(status)),
                   }}
                 />
@@ -146,7 +151,7 @@ function StatCard({
         </Box>
 
         {/* Rows */}
-        <Stack spacing={0.5}>
+        <Stack spacing={0.5} sx={{ width: "100%" }}>
           {entries.map(([status, count]) => {
             const color = resolveColor(theme, statusPalette(status));
             const pct = total ? Math.round((count / total) * 100) : 0;
@@ -155,7 +160,10 @@ function StatCard({
                 key={status}
                 sx={{
                   display: "grid",
-                  gridTemplateColumns: "auto 1fr auto auto",
+                  gridTemplateColumns: {
+                    xs: "auto minmax(0, 1fr) auto",
+                    sm: "auto minmax(0, 1fr) 40px auto",
+                  },
                   alignItems: "center",
                   columnGap: 1.25,
                   px: 1,
@@ -182,6 +190,7 @@ function StatCard({
                   color="text.secondary"
                   sx={{
                     fontVariantNumeric: "tabular-nums",
+                    textAlign: "right",
                     display: { xs: "none", sm: "block" },
                   }}
                 >
