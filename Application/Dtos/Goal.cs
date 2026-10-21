@@ -13,3 +13,10 @@ public class AddGoalDto
     public required string Title { get; set; } 
     public required string Period { get; set; } 
 }
+public class UpdateCurrentUserGoalDto
+{
+    public required string Id { get; set; } 
+    public string? Title { get; set; } 
+    public bool? IsCompleted { get; set; }
+    public string? Period { get; set; }
+}

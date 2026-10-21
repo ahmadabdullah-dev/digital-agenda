@@ -25,4 +25,10 @@ public class GoalController: BaseApiController
         var result = await _goalService.AddGoalToCurrentUserAsync(dto, ct);
         return HandleResult(result);
     }
+    [HttpPut("goal")]
+    public async Task<IActionResult> UpdateCurrentUserGoal(UpdateCurrentUserGoalDto dto, CancellationToken ct)
+    {
+        var result = await _goalService.UpdateCurrentUserGoalAsync(dto, ct);
+        return HandleResult(result);
+    }
 }
