@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -16,6 +17,12 @@ public class GoalController: BaseApiController
     public async Task<IActionResult> GetAllCurrentUserGoals([FromQuery] PaginationParams p, CancellationToken ct)
     {
         var result = await _goalService.GetAllCurrentUserGoalsAsync(p, ct);
+        return HandleResult(result);
+    }
+    [HttpPost("goal")]
+    public async Task<IActionResult> AddGoalToCurrentUser(AddGoalDto dto, CancellationToken ct)
+    {
+        var result = await _goalService.AddGoalToCurrentUserAsync(dto, ct);
         return HandleResult(result);
     }
 }

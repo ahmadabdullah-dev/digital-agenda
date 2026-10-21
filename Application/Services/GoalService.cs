@@ -1,4 +1,6 @@
-﻿using Infrastructure.Repositories;
+﻿using Infrastructure.Congigurations;
+using Infrastructure.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Services;
 
@@ -6,10 +8,14 @@ public class GoalService : IGoalService
 {
     private readonly IGoalRepository _goalRepository;
     private readonly IUserService _userService;
-    public GoalService(IGoalRepository goalRepository, IUserService userService)
+    private readonly ILogger<GoalService> _logger;
+    public GoalService(IGoalRepository goalRepository,
+        IUserService userService,
+        ILogger<GoalService> logger)
     {
         _goalRepository = goalRepository;
         _userService = userService;
+        _logger = logger;
     }
     public async Task<Result<PagedList<GoalDto>>> GetAllCurrentUserGoalsAsync(PaginationParams p, CancellationToken ct)
     {
@@ -38,5 +44,35 @@ public class GoalService : IGoalService
         };
 
         return Result<PagedList<GoalDto>>.Success(dtos);
+    }
+    public async Task<Result<string>> AddGoalToCurrentUserAsync(AddGoalDto dto, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (currentUserId == null)
+            return Result<string>.Failure("User not authenticated", 401);
+
+        var goal = new Goal
+        {
+            UserId = currentUserId,
+            Title = dto.Title,
+            Period = dto.Period
+        };
+        try
+        {
+            await _goalRepository.AddAsync(goal, ct);
+            await _goalRepository.SaveChangesAsync(ct);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Failed to create goal task for user with id {currentUserId}");
+            return Result<string>.Failure("Unexpected error while adding the goal", 500);
+        }
+
+        return Result<string>.Success("Goal added successfully");
     }
 }

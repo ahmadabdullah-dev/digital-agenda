@@ -8,3 +8,8 @@ public class GoalDto
     public string Period { get; set; } = null!;
     public DateTime CreatedAt { get; set; }
 }
+public class AddGoalDto
+{
+    public required string Title { get; set; } 
+    public required string Period { get; set; } 
+}
