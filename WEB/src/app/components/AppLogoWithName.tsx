@@ -32,7 +32,7 @@ export default function AppLogoWithName() {
           lineHeight: 1,
         }}
       >
-      Smart Digital Agenda 
+      Digital Agenda 
       </Typography>
     </Box>
   );

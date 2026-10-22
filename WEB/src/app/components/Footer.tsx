@@ -11,7 +11,7 @@ export default function Footer() {
     >
       <Divider sx={{ borderWidth:2, borderColor: "primary.main"}} />
       <Typography variant="body1" color="text.secondary" sx={{mt:2}}>
-        © {new Date().getFullYear()} Smart Digital Agenda. All rights reserved.
+        © {new Date().getFullYear()} Digital Agenda. All rights reserved.
       </Typography>
     </Box>
   );
