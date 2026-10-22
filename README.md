@@ -1,6 +1,5 @@
-# Smart Digital Agenda
-- A personal productivity platform that helps to organize daily plans, tasks, notes, and goals in one place.
-- It features an Al assistant for better and clear mind map.
+# Digital Agenda
+A personal productivity platform to manage your tasks, notes, goals, and applications in one place, with built-in statistics to track your progress.
 
 ## Tech Stack
 - **WEB:** React, TypeScript, TanStack Query, Axios, MUI, React Router
