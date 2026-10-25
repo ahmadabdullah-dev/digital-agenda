@@ -2,10 +2,12 @@ import { useState } from "react";
 import {
   Alert,
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
   Stack,
   TextField,
 } from "@mui/material";
@@ -22,6 +24,7 @@ export default function UpdateGoalDialog({ goal, onClose }: Props) {
     id: goal.id,
     title: goal.title,
     period: goal.period,
+    isCompleted: goal.isCompleted,
   });
   const { mutate, isPending, isError, error } = useUpdateCurrentUserGoal();
 
@@ -50,6 +53,17 @@ export default function UpdateGoalDialog({ goal, onClose }: Props) {
             onChange={(e) => setForm((f) => ({ ...f, period: e.target.value }))}
             fullWidth
             slotProps={{ htmlInput: { maxLength: 50 } }}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={form.isCompleted ?? false}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, isCompleted: e.target.checked }))
+                }
+              />
+            }
+            label="Completed"
           />
         </Stack>
       </DialogContent>
