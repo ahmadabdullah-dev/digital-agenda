@@ -16,7 +16,7 @@ export function useAddDayNote() {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["daynote", variables.date] });
       queryClient.invalidateQueries({ queryKey: ["NotesCount", variables.date] });
-
+      queryClient.invalidateQueries({ queryKey: ["AllDaysNotesCount"] });
     },
   });
 }
@@ -58,6 +58,7 @@ export function useDeleteDayNote() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["daynote"] });
       queryClient.invalidateQueries({ queryKey: ["NotesCount"] });
+      queryClient.invalidateQueries({ queryKey: ["AllDaysNotesCount"] });
     },
   });
 }
