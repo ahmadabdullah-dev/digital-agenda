@@ -12,7 +12,7 @@ namespace Infrastructure
         {
             services.AddDbContext<ApplicationDbContext>(opt =>
             {
-                opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+                opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
                 .LogTo(Console.WriteLine, LogLevel.Information).EnableSensitiveDataLogging(); 
             });
 
